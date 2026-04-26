@@ -4,834 +4,660 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>LuvAi — Intelligent Assistant</title>
-  
-  <!-- Firebase SDK -->
+
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-  
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Fonts -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --glass-bg: rgba(255, 255, 255, 0.72);
-      --glass-border: rgba(255, 255, 255, 0.85);
-      --glass-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.06),
-        0 2px 8px rgba(0, 0, 0, 0.04),
-        inset 0 1px 0 rgba(255,255,255,0.95);
-      --fg: #0f0f0f;
-      --fg-muted: #5a5a5a;
-      --accent: #1a1a1a;
-      --radius-xl: 24px;
-      --radius-lg: 18px;
-      --radius-md: 12px;
+      --glass-bg: rgba(255,255,255,0.65);
+      --glass-border: rgba(0,0,0,0.06);
+      --glass-shadow: 0 8px 32px rgba(0,0,0,0.05);
+      --fg: #0f172a;
+      --fg-muted: #64748b;
+      --accent: #0f172a;
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html {
-      scroll-behavior: smooth;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; -webkit-tap-highlight-color:transparent; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #f8f9fb 0%, #eef1f5 50%, #f5f7fa 100%);
-      color: var(--fg);
-      overflow-x: hidden;
-      min-height: 100vh;
-      font-size: 14px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+      background:#f8f9fa;
+      color:var(--fg);
+      overflow-x:hidden;
+      min-height:100vh;
+      font-size:14px;
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
     }
 
-    /* Advanced Glass System */
-    .glass {
-      background: linear-gradient(
-        135deg,
-        rgba(255,255,255,0.9) 0%,
-        rgba(255,255,255,0.7) 50%,
-        rgba(250,252,255,0.8) 100%
-      );
-      backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
-      -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
-      border: 1px solid rgba(255, 255, 255, 0.88);
-      box-shadow: var(--glass-shadow);
-    }
-
-    .glass-panel {
-      background: linear-gradient(
-        145deg,
-        rgba(255,255,255,0.98) 0%,
-        rgba(248,250,254,0.92) 100%
-      );
-      backdrop-filter: blur(40px) saturate(200%) brightness(1.02);
-      -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.02);
-      border: 1px solid rgba(255, 255, 255, 0.95);
+    /* === LIQUID GLASS CORE (WHITE THEME) === */
+    .liquid-glass {
+      background: linear-gradient(135deg,rgba(255,255,255,0.85) 0%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,0.75) 100%);
+      backdrop-filter:blur(40px) saturate(180%) brightness(1.05);
+      -webkit-backdrop-filter:blur(40px) saturate(180%) brightness(1.05);
+      border:1px solid rgba(0,0,0,0.06);
       box-shadow:
-        0 24px 64px -16px rgba(0, 0, 0, 0.08),
-        0 8px 24px -8px rgba(0, 0, 0, 0.04),
+        0 8px 32px rgba(0,0,0,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        inset 0 -1px 0 rgba(0,0,0,0.02);
+      position:relative;
+    }
+    .liquid-glass::before {
+      content:'';
+      position:absolute; top:0;left:0;right:0; height:50%;
+      background:linear-gradient(180deg,rgba(255,255,255,0.4) 0%,transparent 100%);
+      border-radius:inherit; pointer-events:none;
+    }
+
+    .liquid-glass-strong {
+      background: linear-gradient(135deg,rgba(255,255,255,0.95) 0%,rgba(255,255,255,0.8) 50%,rgba(255,255,255,0.9) 100%);
+      backdrop-filter:blur(60px) saturate(200%) brightness(1.05);
+      -webkit-backdrop-filter:blur(60px) saturate(200%) brightness(1.05);
+      border:1px solid rgba(0,0,0,0.08);
+      box-shadow:
+        0 16px 48px rgba(0,0,0,0.08),
         inset 0 1px 0 rgba(255,255,255,1),
-        inset 0 -0.5px 0 rgba(0,0,0,0.02);
+        inset 0 -1px 0 rgba(0,0,0,0.02);
+      position:relative;
+    }
+    .liquid-glass-strong::before {
+      content:'';
+      position:absolute; top:0;left:0;right:0; height:45%;
+      background:linear-gradient(180deg,rgba(255,255,255,0.5) 0%,transparent 100%);
+      border-radius:inherit; pointer-events:none;
     }
 
-    .glass-input {
-      background: linear-gradient(
-        135deg,
-        rgba(255,255,255,0.95) 0%,
-        rgba(248,250,254,0.85) 100%
-      );
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border: 1.5px solid rgba(0, 0, 0, 0.06);
+    .liquid-glass-input {
+      background:rgba(255,255,255,0.7);
+      backdrop-filter:blur(30px) saturate(160%);
+      -webkit-backdrop-filter:blur(30px) saturate(160%);
+      border:1px solid rgba(0,0,0,0.08);
       box-shadow:
-        0 4px 16px rgba(0,0,0,0.03),
-        inset 0 2px 4px rgba(255,255,255,0.8);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        0 4px 16px rgba(0,0,0,0.04),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+      position:relative;
     }
-    
-    .glass-input:focus-within {
-      border-color: rgba(0,0,0,0.12);
+    .liquid-glass-input:focus-within {
+      background:rgba(255,255,255,0.85);
+      border-color:rgba(0,0,0,0.12);
       box-shadow:
-        0 12px 40px rgba(0,0,0,0.08),
-        0 4px 12px rgba(0,0,0,0.04),
-        inset 0 2px 4px rgba(255,255,255,0.9);
-      transform: translateY(-1px);
+        0 12px 40px rgba(0,0,0,0.06),
+        inset 0 1px 0 rgba(255,255,255,1),
+        0 0 0 4px rgba(0,0,0,0.03);
+      transform:translateY(-1px);
     }
 
-    /* Ambient Background */
-    .ambient {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-      background: linear-gradient(180deg, #fafbfc 0%, #f0f2f5 40%, #f8f9fb 100%);
-    }
-    
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0.4;
-      animation: float 30s ease-in-out infinite;
-      will-change: transform;
-    }
-    
-    .orb-1 {
-      width: 600px;
-      height: 600px;
-      top: -20%;
-      right: -15%;
-      background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
-    }
-    
-    .orb-2 {
-      width: 500px;
-      height: 500px;
-      bottom: -20%;
-      left: -15%;
-      background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
-      animation-delay: -15s;
-    }
-    
-    .orb-3 {
-      width: 300px;
-      height: 300px;
-      top: 40%;
-      left: 30%;
-      background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
-      animation-delay: -7s;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-      33% { transform: translate(30px, -30px) rotate(5deg) scale(1.05); }
-      66% { transform: translate(-20px, 20px) rotate(-3deg) scale(0.95); }
-    }
-
-    /* Noise Texture */
-    .noise::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      opacity: 0.018;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* Sidebar */
+    /* === SIDEBAR === */
     .sidebar {
-      width: 300px;
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      transform: translateX(-100%);
-      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
+      width:300px; height:100vh;
+      position:fixed; top:0; left:0;
+      transform:translateX(-100%);
+      transition:transform 0.5s cubic-bezier(0.22,1,0.36,1);
+      z-index:1001;
+      display:flex; flex-direction:column;
+      border-radius:0 28px 28px 0;
+      overflow:hidden;
     }
-    .sidebar.open { transform: translateX(0); }
+    .sidebar.open { transform:translateX(0); }
 
-    @media (max-width: 1024px) {
-      .sidebar { 
-        width: 320px; 
-        box-shadow: 24px 0 80px rgba(0,0,0,0.12);
-      }
+    @media(min-width:1024px) {
+      .sidebar { transform:translateX(0); }
+      .main-shift { margin-left:300px; }
+      .sidebar-close-desktop { display:none; }
+    }
+    @media(max-width:1023px) {
+      .sidebar-close-desktop { display:flex; }
     }
 
     .nav-item {
-      padding: 13px 16px;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      font-size: 13.5px;
-      color: #555;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 400;
-      position: relative;
-      overflow: hidden;
+      padding:12px 16px; border-radius:14px;
+      cursor:pointer;
+      transition:all 0.25s cubic-bezier(0.16,1,0.3,1);
+      font-size:13px; color:rgba(0,0,0,0.45);
+      display:flex; align-items:center; gap:12px;
+      font-weight:500;
     }
-    .nav-item::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 3px;
-      height: 0;
-      background: var(--accent);
-      border-radius: 0 4px 4px 0;
-      transition: height 0.25s ease;
+    .nav-item:hover {
+      background:rgba(0,0,0,0.04);
+      color:rgba(0,0,0,0.8);
+      transform:translateX(3px);
     }
-    .nav-item:hover { 
-      background: rgba(0,0,0,0.03);
-      transform: translateX(4px);
-      color: #222;
+    .nav-item.active {
+      background:rgba(0,0,0,0.06);
+      color:#000; font-weight:600;
     }
-    .nav-item:hover::before { height: 60%; }
-    .nav-item.active { 
-      background: rgba(0,0,0,0.05);
-      font-weight: 600;
-      color: var(--fg);
-    }
-    .nav-item.active::before { height: 70%; }
 
-    /* Main Search Container - Enhanced */
+    /* === SEARCH CONTAINER === */
     .search-container {
-      width: 720px;
-      max-width: 94vw;
-      border-radius: 26px;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .search-container::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      padding: 1.5px;
-      background: linear-gradient(
-        135deg, 
-        rgba(255,255,255,0.95) 0%, 
-        rgba(240,242,245,0.5) 50%, 
-        rgba(255,255,255,0.9) 100%
-      );
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask-composite: exclude;
-      pointer-events: none;
+      width:680px; max-width:92vw;
+      border-radius:24px;
+      transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+      overflow:hidden;
     }
 
-    /* Typing Cursor - Fixed Layout Shift */
+    /* === INPUTS === */
+    .clean-input {
+      background:transparent;
+      border:none; outline:none;
+      color:rgba(0,0,0,0.85);
+      font-size:15px; font-weight:400;
+      caret-color:rgba(0,0,0,0.6);
+      width:100%;
+      resize:none;
+      line-height:1.5;
+    }
+    .clean-input::placeholder {
+      color:rgba(0,0,0,0.3);
+      font-weight:400;
+    }
+
+    /* === TYPING CURSOR === */
     .typing-wrapper {
-      display: inline-flex;
-      align-items: baseline;
-      justify-content: center;
-      min-height: 1.3em;
-      position: relative;
+      display:inline-flex;
+      align-items:baseline; justify-content:center;
+      min-height:1.3em;
     }
-    
     .typing-cursor {
-      display: inline-block;
-      width: 2.5px;
-      height: 1.1em;
-      background: linear-gradient(180deg, #333 0%, #666 100%);
-      margin-left: 2px;
-      vertical-align: text-bottom;
-      border-radius: 2px;
-      animation: blinkSmooth 1s step-end infinite;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      display:inline-block;
+      width:3px; height:0.95em;
+      background:linear-gradient(180deg,#0f172a 0%,#334155 100%);
+      margin-left:3px; vertical-align:text-bottom;
+      border-radius:2px;
+      animation:cursorBlink 1s step-end infinite;
+      box-shadow:0 0 8px rgba(15,23,42,0.2);
     }
-    
-    @keyframes blinkSmooth {
-      0%, 100% { opacity: 1; transform: scaleY(1); }
-      50% { opacity: 0; transform: scaleY(0.8); }
+    @keyframes cursorBlink {
+      0%,100% { opacity:1; } 50% { opacity:0; }
     }
 
-    /* Buttons */
+    /* === BUTTONS === */
     .btn-primary {
-      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-      color: #fff;
-      padding: 11px 28px;
-      border-radius: 9999px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      border: none;
-      letter-spacing: 0.02em;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
-      position: relative;
-      overflow: hidden;
-    }
-    .btn-primary::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);
-      opacity: 0;
-      transition: opacity 0.3s;
+      background:linear-gradient(135deg,rgba(15,23,42,0.9) 0%,rgba(15,23,42,0.8) 100%);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+      color:#fff;
+      padding:11px 28px; border-radius:9999px;
+      font-size:13px; font-weight:600;
+      cursor:pointer;
+      transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+      border:1px solid rgba(255,255,255,0.1);
+      box-shadow:0 4px 16px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.1);
     }
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.15);
+      background:linear-gradient(135deg,rgba(15,23,42,1) 0%,rgba(15,23,42,0.95) 100%);
+      transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.15);
     }
-    .btn-primary:hover::before { opacity: 1; }
-    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:active { transform:translateY(0); }
 
-    .btn-secondary {
-      background: rgba(255,255,255,0.9);
-      color: #1a1a1a;
-      padding: 11px 28px;
-      border-radius: 9999px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      border: 1.5px solid rgba(0,0,0,0.08);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    .btn-solid {
+      background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);
+      color:#fff;
+      padding:11px 28px; border-radius:9999px;
+      font-size:13px; font-weight:600;
+      cursor:pointer;
+      transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+      border:none;
+      box-shadow:0 4px 20px rgba(15,23,42,0.25);
     }
-    .btn-secondary:hover {
-      background: rgba(248,250,254,0.95);
-      border-color: rgba(0,0,0,0.15);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    .btn-solid:hover {
+      transform:translateY(-2px);
+      box-shadow:0 8px 30px rgba(15,23,42,0.35);
     }
 
-    /* Suggestion Chips - Refined */
+    /* === SUGGESTION CHIPS === */
     .suggest-chip {
-      padding: 10px 18px;
-      border-radius: 9999px;
-      border: 1.5px solid rgba(0,0,0,0.06);
-      background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,254,0.7) 100%);
-      backdrop-filter: blur(12px);
-      font-size: 12.5px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      white-space: nowrap;
-      color: #444;
-      letter-spacing: 0.01em;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-      position: relative;
-      overflow: hidden;
-    }
-    .suggest-chip::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at center, rgba(0,0,0,0.03) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.3s;
+      padding:10px 18px; border-radius:9999px;
+      border:1px solid rgba(0,0,0,0.08);
+      background:rgba(255,255,255,0.6);
+      backdrop-filter:blur(12px);
+      font-size:12.5px; font-weight:500;
+      cursor:pointer;
+      transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+      white-space:nowrap;
+      color:rgba(0,0,0,0.5);
     }
     .suggest-chip:hover {
-      border-color: rgba(0,0,0,0.15);
-      background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,254,0.9) 100%);
-      color: #111;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      transform: translateY(-2px);
+      border-color:rgba(0,0,0,0.15);
+      background:rgba(255,255,255,0.9);
+      color:rgba(0,0,0,0.9);
+      transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(0,0,0,0.06);
     }
-    .suggest-chip:hover::after { opacity: 1; }
 
-    /* Send Button */
+    /* === SEND BUTTON === */
     .send-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-      color: white;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+      width:42px; height:42px; border-radius:14px;
+      background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);
+      color:white; border:none; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+      flex-shrink:0;
+      box-shadow:0 4px 16px rgba(15,23,42,0.2);
     }
     .send-btn:hover:not(:disabled) {
-      background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
-      transform: scale(1.08) rotate(-3deg);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      transform:scale(1.08);
+      box-shadow:0 8px 24px rgba(15,23,42,0.35);
     }
-    .send-btn:active:not(:disabled) { transform: scale(0.95); }
+    .send-btn:active:not(:disabled) { transform:scale(0.95); }
     .send-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      background: #ccc;
-      box-shadow: none;
+      opacity:0.2; cursor:not-allowed;
+      background:rgba(0,0,0,0.1);
+      box-shadow:none;
     }
 
-    /* Messages - Enhanced Bubbles */
+    /* === MESSAGE BUBBLES === */
     .msg-wrap {
-      animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      opacity: 0;
+      animation:slideUpFade 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+      opacity:0;
     }
     @keyframes slideUpFade {
-      from { 
-        opacity: 0; 
-        transform: translateY(16px) scale(0.97); 
-      }
-      to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
-      }
+      from { opacity:0; transform:translateY(16px) scale(0.97); }
+      to { opacity:1; transform:translateY(0) scale(1); }
     }
 
     .bubble-user {
-      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-      color: white;
-      border-radius: 22px 22px 6px 22px;
-      border: 1px solid rgba(0,0,0,0.1);
-      box-shadow: 
-        0 4px 16px rgba(0,0,0,0.1),
-        inset 0 1px 0 rgba(255,255,255,0.1);
-      position: relative;
-      overflow: hidden;
+      background:linear-gradient(135deg,rgba(15,23,42,0.95) 0%,rgba(30,41,59,0.9) 100%);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+      color:#fff;
+      border-radius:22px 22px 6px 22px;
+      border:1px solid rgba(255,255,255,0.1);
+      box-shadow:0 4px 20px rgba(15,23,42,0.15),inset 0 1px 0 rgba(255,255,255,0.1);
+      position:relative; overflow:hidden;
     }
     .bubble-user::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 50%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
-      border-radius: 22px 22px 0 0;
-      pointer-events: none;
+      content:'';
+      position:absolute; top:0; left:0; right:0; height:50%;
+      background:linear-gradient(180deg,rgba(255,255,255,0.06) 0%,transparent 100%);
+      border-radius:22px 22px 0 0; pointer-events:none;
     }
 
     .bubble-ai {
-      background: linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(248,250,254,0.95) 100%);
-      border-radius: 22px 22px 22px 6px;
-      border: 1.5px solid rgba(0,0,0,0.05);
-      box-shadow: 
-        0 4px 20px rgba(0,0,0,0.04),
-        inset 0 1px 0 rgba(255,255,255,1);
-      backdrop-filter: blur(20px);
+      background:linear-gradient(135deg,rgba(255,255,255,0.85) 0%,rgba(255,255,255,0.65) 100%);
+      backdrop-filter:blur(30px);
+      -webkit-backdrop-filter:blur(30px);
+      border-radius:22px 22px 22px 6px;
+      border:1px solid rgba(0,0,0,0.06);
+      box-shadow:0 4px 20px rgba(0,0,0,0.04),inset 0 1px 0 rgba(255,255,255,0.9);
     }
 
-    /* Typing Dots - Refined */
-    .dot-container {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 8px 4px;
-    }
+    /* === TYPING DOTS === */
+    .dot-container { display:flex; align-items:center; gap:5px; padding:8px 4px; }
     .dot {
-      width: 7px; 
-      height: 7px;
-      background: linear-gradient(135deg, #888 0%, #aaa 100%);
-      border-radius: 50%;
-      animation: bounceDot 1.4s infinite ease-in-out;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width:7px; height:7px;
+      background:rgba(0,0,0,0.3);
+      border-radius:50%;
+      animation:bounceDot 1.4s infinite ease-in-out;
     }
-    .dot:nth-child(2) { animation-delay: 0.16s; }
-    .dot:nth-child(3) { animation-delay: 0.32s; }
+    .dot:nth-child(2) { animation-delay:0.16s; }
+    .dot:nth-child(3) { animation-delay:0.32s; }
     @keyframes bounceDot {
-      0%, 80%, 100% { 
-        transform: scale(0.6) translateY(0); 
-        opacity: 0.4; 
-      }
-      40% { 
-        transform: scale(1.1) translateY(-4px); 
-        opacity: 1; 
-      }
+      0%,80%,100% { transform:scale(0.6); opacity:0.3; }
+      40% { transform:scale(1.1) translateY(-4px); opacity:1; }
     }
 
-    /* Modal - Enhanced */
+    /* === MODAL === */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      z-index: 2000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      padding: 20px;
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.3);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      z-index:2000;
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none;
+      transition:all 0.35s cubic-bezier(0.16,1,0.3,1);
+      padding:20px;
     }
-    .modal-overlay.show { 
-      opacity: 1; 
-      pointer-events: auto; 
-    }
+    .modal-overlay.show { opacity:1; pointer-events:auto; }
     .modal-content {
-      transform: scale(0.93) translateY(24px);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      max-height: 90vh;
-      overflow-y: auto;
+      transform:scale(0.93) translateY(24px);
+      transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+      max-height:90vh; overflow-y:auto;
     }
-    .modal-overlay.show .modal-content {
-      transform: scale(1) translateY(0);
-    }
+    .modal-overlay.show .modal-content { transform:scale(1) translateY(0); }
 
-    /* Code Block - Dark Mode Style */
+    /* === CODE BLOCK === */
     .code-block {
-      background: linear-gradient(145deg, #1e1e2e 0%, #181825 100%);
-      border-radius: 14px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      line-height: 1.7;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 
-        0 8px 32px rgba(0,0,0,0.2),
-        inset 0 1px 0 rgba(255,255,255,0.05);
-      overflow: hidden;
+      background:rgba(15,23,42,0.95);
+      backdrop-filter:blur(20px);
+      border-radius:14px;
+      font-family:'JetBrains Mono',monospace;
+      font-size:12px; line-height:1.7;
+      border:1px solid rgba(255,255,255,0.05);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
+      overflow:hidden;
     }
 
-    /* Markdown Styles - Enhanced */
-    .md p { 
-      margin-bottom: 0.85rem; 
-      line-height: 1.75; 
-      font-size: 14px; 
-      color: #2d2d2d;
-    }
-    .md p:last-child { margin-bottom: 0; }
+    /* === MARKDOWN === */
+    .md p { margin-bottom:0.85rem; line-height:1.75; font-size:14px; color:rgba(0,0,0,0.75); }
+    .md p:last-child { margin-bottom:0; }
     .md code:not(pre code) {
-      background: linear-gradient(135deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.03) 100%);
-      padding: 3px 8px;
-      border-radius: 7px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: #c7254e;
-      border: 1px solid rgba(0,0,0,0.06);
-      font-weight: 500;
+      background:rgba(15,23,42,0.06);
+      padding:3px 8px; border-radius:7px;
+      font-family:'JetBrains Mono',monospace;
+      font-size:12px; color:#4338ca;
+      border:1px solid rgba(0,0,0,0.04);
     }
-    .md pre code { background: none; color: inherit; }
-    .md ul, .md ol { margin: 0.85rem 0 0.85rem 1.5rem; }
-    .md li { 
-      margin-bottom: 0.35rem; 
-      line-height: 1.7; 
-      font-size: 14px; 
-      color: #3d3d3d;
-    }
-    .md strong { 
-      font-weight: 700; 
-      color: #0f0f0f; 
-    }
-    .md h1, .md h2, .md h3 { 
-      font-weight: 700; 
-      margin-top: 1.2rem; 
-      margin-bottom: 0.6rem; 
-      letter-spacing: -0.02em;
-      color: #1a1a1a;
-    }
+    .md pre code { background:none; color:rgba(255,255,255,0.8); }
+    .md ul,.md ol { margin:0.85rem 0 0.85rem 1.5rem; }
+    .md li { margin-bottom:0.35rem; line-height:1.7; font-size:14px; color:rgba(0,0,0,0.65); }
+    .md strong { font-weight:700; color:#0f172a; }
+    .md h1,.md h2,.md h3 { font-weight:700; margin-top:1.2rem; margin-bottom:0.6rem; letter-spacing:-0.02em; color:#0f172a; }
     .md blockquote {
-      border-left: 4px solid #c4b5fd;
-      padding: 12px 16px;
-      margin: 1rem 0;
-      color: #5b5b5b;
-      font-style: italic;
-      background: linear-gradient(90deg, rgba(199,181,253,0.08) 0%, transparent 100%);
-      border-radius: 0 12px 12px 0;
-      font-size: 13.5px;
+      border-left:4px solid rgba(15,23,42,0.2);
+      padding:12px 16px; margin:1rem 0;
+      color:rgba(0,0,0,0.5); font-style:italic;
+      background:rgba(15,23,42,0.03);
+      border-radius:0 12px 12px 0; font-size:13.5px;
     }
 
-    /* Limit Badge */
+    /* === LIMIT BADGE === */
     .limit-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 9999px;
-      font-size: 11.5px;
-      font-weight: 600;
-      background: linear-gradient(135deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.02) 100%);
-      color: #555;
-      border: 1px solid rgba(0,0,0,0.06);
-      letter-spacing: 0.01em;
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 14px; border-radius:9999px;
+      font-size:11.5px; font-weight:600;
+      background:rgba(0,0,0,0.04);
+      color:rgba(0,0,0,0.4);
+      border:1px solid rgba(0,0,0,0.06);
     }
 
-    /* Scrollbar - Custom */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { 
-      background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.1) 100%); 
-      border-radius: 10px; 
-      border: 2px solid transparent;
-      background-clip: content-box;
+    /* === SCROLLBAR === */
+    ::-webkit-scrollbar { width:6px; height:6px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb {
+      background:rgba(0,0,0,0.1);
+      border-radius:10px;
     }
-    ::-webkit-scrollbar-thumb:hover { 
-      background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.15) 100%);
-      background-clip: content-box;
-    }
+    ::-webkit-scrollbar-thumb:hover { background:rgba(0,0,0,0.2); }
 
-    *:focus-visible { 
-      outline: 2px solid rgba(99,102,241,0.5); 
-      outline-offset: 3px; 
-      border-radius: 8px; 
+    *:focus-visible {
+      outline:2px solid rgba(15,23,42,0.3);
+      outline-offset:3px; border-radius:8px;
     }
-    input:focus { outline: none; }
+    input:focus,textarea:focus { outline:none; }
 
-    .nav-link {
-      position: relative;
-      transition: color 0.25s;
-      font-weight: 500;
-    }
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #1a1a1a 0%, #666 100%);
-      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      border-radius: 2px;
-    }
-    .nav-link:hover::after { width: 100%; }
-    .nav-link:hover { color: #1a1a1a; }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    /* Logo Animation */
-    .logo-icon {
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .logo-icon:hover {
-      transform: rotate(-5deg) scale(1.05);
-      box-shadow: 0 0 0 4px rgba(0,0,0,0.06);
-    }
-
-    /* Auto-resize textarea */
     .auto-resize {
-      resize: none;
-      overflow-y: auto;
-      max-height: 150px;
-      min-height: 24px;
-      line-height: 1.5;
+      resize:none; overflow-y:auto;
+      max-height:150px; min-height:24px; line-height:1.5;
     }
 
-    /* Disclaimer Footer */
-    .disclaimer-footer {
-      background: linear-gradient(180deg, transparent 0%, rgba(248,250,254,0.8) 100%);
-      backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(0,0,0,0.04);
-    }
-
-    /* Mobile Optimizations */
-    @media (max-width: 640px) {
-      body { font-size: 13px; }
-      .search-container { border-radius: 20px; }
-      .bubble-user, .bubble-ai { border-radius: 18px 18px 4px 18px; }
-      .send-btn { width: 38px; height: 38px; border-radius: 12px; }
-      .suggest-chip { padding: 8px 14px; font-size: 11.5px; }
-      .md p, .md li { font-size: 13px; }
-    }
-
-    /* Tablet Optimizations */
-    @media (min-width: 641px) and (max-width: 1024px) {
-      .search-container { width: 600px; }
-    }
-
-    /* Avatar Ring */
-    .avatar-ring {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 2px;
-      border-radius: 50%;
-      box-shadow: 0 4px 12px rgba(102,126,234,0.3);
-    }
-
-    /* History Item */
+    /* === HISTORY ITEM === */
     .history-item {
-      transition: all 0.25s ease;
-      border-radius: 12px;
-      padding: 10px 12px;
-      cursor: pointer;
-      font-size: 12.5px;
-      color: #666;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border: 1px solid transparent;
+      transition:all 0.25s ease;
+      border-radius:12px; padding:10px 12px;
+      cursor:pointer; font-size:12.5px;
+      color:rgba(0,0,0,0.35);
+      display:flex; align-items:center; gap:10px;
+      border:1px solid transparent;
     }
     .history-item:hover {
-      background: rgba(0,0,0,0.03);
-      border-color: rgba(0,0,0,0.06);
-      color: #333;
-      transform: translateX(3px);
+      background:rgba(0,0,0,0.04);
+      border-color:rgba(0,0,0,0.06);
+      color:rgba(0,0,0,0.7);
+      transform:translateX(3px);
     }
 
-    /* Input Enhancement */
-    .input-enhanced {
-      caret-color: #1a1a1a;
-      font-size: 14.5px;
-      font-weight: 400;
-      letter-spacing: 0.005em;
+    /* === PROFILE CARD === */
+    .profile-card {
+      background:linear-gradient(135deg,rgba(255,255,255,0.6) 0%,rgba(255,255,255,0.3) 100%);
+      border:1px solid rgba(0,0,0,0.06);
+      border-radius:20px;
+      padding:16px;
+      transition:all 0.3s ease;
     }
-    .input-enhanced::placeholder {
-      color: #aaa;
-      font-weight: 400;
-      opacity: 0.8;
+    .profile-card:hover {
+      background:linear-gradient(135deg,rgba(255,255,255,0.8) 0%,rgba(255,255,255,0.5) 100%);
+      border-color:rgba(0,0,0,0.1);
+    }
+
+    .profile-avatar {
+      width:40px; height:40px; border-radius:50%;
+      border:2px solid rgba(15,23,42,0.15);
+      box-shadow:0 0 15px rgba(15,23,42,0.1);
+      object-fit:cover;
+    }
+
+    /* Logo image */
+    .logo-img {
+      width:38px; height:38px; border-radius:12px;
+      object-fit:cover;
+      transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .logo-img:hover {
+      transform:rotate(-5deg) scale(1.05);
+      box-shadow:0 0 20px rgba(15,23,42,0.15);
+    }
+
+    /* Sidebar close button */
+    .sidebar-close {
+      position:absolute; top:16px; right:16px;
+      width:32px; height:32px; border-radius:10px;
+      background:rgba(0,0,0,0.04);
+      border:1px solid rgba(0,0,0,0.06);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+      transition:all 0.25s ease;
+      color:rgba(0,0,0,0.4);
+    }
+    .sidebar-close:hover {
+      background:rgba(0,0,0,0.08);
+      color:#000;
+      transform:rotate(90deg);
+    }
+
+    /* Modal inputs */
+    .modal-input {
+      width:100%;
+      padding:14px 18px;
+      border-radius:16px;
+      background:rgba(0,0,0,0.03);
+      border:1px solid rgba(0,0,0,0.08);
+      color:#0f172a;
+      font-size:14px;
+      font-weight:500;
+      transition:all 0.3s ease;
+    }
+    .modal-input::placeholder { color:rgba(0,0,0,0.3); }
+    .modal-input:focus {
+      border-color:rgba(15,23,42,0.2);
+      background:rgba(0,0,0,0.02);
+      box-shadow:0 0 0 4px rgba(15,23,42,0.05);
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      *,*::before,*::after {
+        animation-duration:0.01ms!important;
+        transition-duration:0.01ms!important;
+      }
+    }
+
+    @media(max-width:640px) {
+      .search-container { border-radius:20px; }
+      .bubble-user,.bubble-ai { border-radius:18px 18px 4px 18px; }
+      .send-btn { width:38px; height:38px; border-radius:12px; }
+      .suggest-chip { padding:8px 14px; font-size:11.5px; }
+    }
+
+    /* Profile modal */
+    .profile-modal-overlay {
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.3);
+      backdrop-filter:blur(16px);
+      z-index:3000;
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none;
+      transition:all 0.35s cubic-bezier(0.16,1,0.3,1);
+      padding:20px;
+    }
+    .profile-modal-overlay.show { opacity:1; pointer-events:auto; }
+    
+    /* Subtle background pattern for light theme */
+    .bg-pattern {
+      position:fixed; inset:0;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(15,23,42,0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(99,102,241,0.03) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(15,23,42,0.02) 0%, transparent 70%);
+      pointer-events:none; z-index:0;
+    }
+    
+    .grid-pattern-light {
+      position:fixed; inset:0;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.015) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,0,0,0.015) 1px,transparent 1px);
+      background-size:60px 60px;
+      pointer-events:none; z-index:1;
     }
   </style>
 </head>
-<body class="noise">
+<body>
 
-<!-- Ambient Background -->
-<div class="ambient">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-</div>
+<!-- Ambient Background (White Theme) -->
+<div class="bg-pattern"></div>
+<div class="grid-pattern-light"></div>
 
 <!-- Sidebar -->
-<aside id="sidebar" class="sidebar glass-panel rounded-r-[26px] shadow-2xl">
+<aside id="sidebar" class="sidebar liquid-glass-strong" style="border-radius:0 28px 28px 0;">
+  <button class="sidebar-close" onclick="toggleSidebar()" aria-label="Close sidebar">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+
   <div class="p-6 flex-1 flex flex-col overflow-hidden">
-    <div class="flex items-center gap-3 mb-8">
-      <div class="w-10 h-10 rounded-2xl bg-black flex items-center justify-center logo-icon shadow-lg">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    <!-- Logo -->
+    <div class="flex items-center gap-3 mb-8 pr-8">
+      <img src="https://images.luviio.com/luviio-logo-circle-v1.png" alt="LuvAi" class="logo-img"/>
+      <div>
+        <h2 class="text-lg font-bold tracking-tight text-gray-900">LuvAi</h2>
+        <p class="text-[10px] text-gray-400 font-medium">Intelligent Assistant</p>
       </div>
-      <h2 class="text-xl font-bold tracking-tight">LuvAi</h2>
     </div>
-    
-    <button onclick="resetChat(); toggleSidebar();" class="w-full py-3 px-4 rounded-xl bg-gray-900 text-white text-xs font-semibold hover:bg-gray-800 transition-all mb-6 flex items-center justify-center gap-2 shadow-lg">
+
+    <!-- New Chat -->
+    <button onclick="resetChat(); if(window.innerWidth<1024)toggleSidebar();" class="w-full py-3 px-4 rounded-2xl text-white text-xs font-semibold transition-all mb-6 flex items-center justify-center gap-2" style="background:linear-gradient(135deg,rgba(15,23,42,0.95) 0%,rgba(30,41,59,0.95) 100%);border:1px solid rgba(255,255,255,0.1);box-shadow:0 4px 16px rgba(15,23,42,0.15);">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       New Chat
     </button>
-    
-    <nav class="space-y-2 flex-1 overflow-y-auto pr-2">
-      <div class="nav-item active">
+
+    <!-- Nav -->
+    <nav class="space-y-1.5 flex-1 overflow-y-auto pr-2">
+      <div class="nav-item active" onclick="resetChat(); if(window.innerWidth<1024)toggleSidebar();">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         Home
       </div>
-      
-      <div class="my-5 border-t border-gray-200/60"></div>
-      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-3 mb-3">Recent Chats</p>
-      <div id="historyNav" class="space-y-1.5">
-        <!-- History items populated by JS -->
-      </div>
+
+      <div class="my-4 border-t border-black/[0.06]"></div>
+      <p class="text-[10px] font-bold text-gray-300 uppercase tracking-wider px-3 mb-3">Recent Chats</p>
+      <div id="historyNav" class="space-y-1"></div>
     </nav>
-    
-    <div class="mt-auto pt-5 border-t border-gray-200/60 space-y-3">
+
+    <!-- Bottom Profile Section -->
+    <div class="mt-auto pt-4 border-t border-black/[0.06]">
+      <!-- Logged In State -->
       <div id="userSection" class="hidden">
-        <div class="flex items-center gap-3 p-3 rounded-2xl hover:bg-black/[0.02] cursor-pointer transition-all group" onclick="signOut()">
-          <div id="userAvatar" class="avatar-ring w-9 h-9 rounded-full bg-white flex items-center justify-center text-[11px] font-bold text-gray-800"></div>
-          <div class="flex-1 min-w-0">
-            <p id="userEmail" class="text-xs font-semibold truncate">User</p>
-            <p class="text-[10.5px] text-gray-400 group-hover:text-gray-600 transition-colors font-medium">Sign out</p>
+        <div class="profile-card" onclick="showProfileModal()" style="cursor:pointer;">
+          <div class="flex items-center gap-3">
+            <img id="userAvatarSidebar" src="https://images.luviio.com/luviio-logo-circle-v1.png" class="profile-avatar" alt="Avatar"/>
+            <div class="flex-1 min-w-0">
+              <p id="userName" class="text-sm font-semibold text-gray-900 truncate">User</p>
+              <p id="userEmailSidebar" class="text-[11px] text-gray-400 truncate">user@email.com</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-300"><path d="M9 18l6-6-6-6"/></svg>
           </div>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-300 group-hover:text-red-400 transition-colors"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </div>
+        <button onclick="signOut()" class="w-full mt-3 py-2.5 px-4 rounded-xl text-[11px] font-semibold text-gray-400 hover:text-gray-700 hover:bg-black/[0.04] transition-all flex items-center justify-center gap-2">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign out
+        </button>
       </div>
-      
-      <div id="guestSection" class="p-4 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200/70">
-        <div class="flex items-center gap-2 mb-2">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          <p class="text-[11px] font-bold text-gray-600">Guest Mode</p>
+
+      <!-- Guest State -->
+      <div id="guestSection">
+        <div class="profile-card">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full bg-black/[0.04] border border-black/[0.06] flex items-center justify-center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-gray-300"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-500">Guest</p>
+              <p class="text-[10px] text-gray-300">2 messages limit</p>
+            </div>
+          </div>
+          <button onclick="showModal('loginModal')" class="w-full py-2.5 px-4 rounded-xl text-[11px] font-bold text-white hover:opacity-90 transition-all flex items-center justify-center gap-2" style="background:linear-gradient(135deg,rgba(15,23,42,0.95) 0%,rgba(30,41,59,0.95) 100%);border:1px solid rgba(255,255,255,0.1);">
+            Sign in for unlimited <span>→</span>
+          </button>
         </div>
-        <p class="text-[11px] text-gray-400 mb-3 leading-relaxed">Limited to 2 messages per session</p>
-        <button onclick="showModal('loginModal')" class="w-full py-2.5 px-4 bg-white rounded-xl text-[11px] font-bold text-gray-700 hover:bg-gray-50 transition-all border border-gray-200/80 shadow-sm hover:shadow-md">Sign in for unlimited access →</button>
       </div>
     </div>
   </div>
 </aside>
 
-<!-- Overlay -->
-<div id="overlay" class="fixed inset-0 bg-black/40 backdrop-blur-md z-[999] hidden lg:hidden transition-all duration-300" onclick="toggleSidebar()"></div>
+<!-- Overlay for mobile sidebar -->
+<div id="overlay" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[1000] hidden transition-all duration-300" onclick="toggleSidebar()"></div>
 
 <!-- Main Content -->
-<main class="relative z-10 min-h-screen flex flex-col">
+<main id="mainContent" class="relative z-10 min-h-screen flex flex-col main-shift transition-all duration-500">
 
   <!-- Top Bar -->
-  <header class="flex items-center justify-between px-5 md:px-8 lg:px-12 py-4 md:py-5 sticky top-0 z-50 bg-transparent">
-    <div class="flex items-center gap-4 md:gap-8">
-      <button onclick="toggleSidebar()" class="lg:hidden p-2.5 hover:bg-white/80 rounded-xl transition-all active:scale-95" aria-label="Menu">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  <header class="flex items-center justify-between px-5 md:px-8 py-4 sticky top-0 z-50" style="background:rgba(248,249,250,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.04);">
+    <div class="flex items-center gap-4">
+      <button onclick="toggleSidebar()" class="p-2.5 hover:bg-black/[0.04] rounded-xl transition-all active:scale-95" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-gray-400"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      
-      <div class="text-2xl md:text-3xl font-bold tracking-tight cursor-pointer select-none flex items-center gap-2" onclick="resetChat()">
-        <span class="bg-black text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">L</span>
-        LuvAi
+
+      <div class="flex items-center gap-2.5 cursor-pointer select-none" onclick="resetChat()">
+        <img src="https://images.luviio.com/luviio-logo-circle-v1.png" alt="LuvAi" class="w-8 h-8 rounded-lg object-cover"/>
+        <span class="text-xl font-bold tracking-tight text-gray-900">LuvAi</span>
       </div>
-      
-      <nav class="hidden xl:flex items-center gap-7 ml-6">
-        <a href="#" class="nav-link text-xs text-gray-500 transition-colors">Research</a>
-        <a href="#" class="nav-link text-xs text-gray-500 transition-colors">Products</a>
-        <a href="#" class="nav-link text-xs text-gray-500 transition-colors">Business</a>
-        <a href="#" class="nav-link text-xs text-gray-500 transition-colors">Developers</a>
-        <a href="#" class="nav-link text-xs text-gray-500 transition-colors">Company</a>
-      </nav>
     </div>
-    
+
     <div class="flex items-center gap-3">
       <div id="authButtons" class="flex items-center gap-3">
-        <button onclick="showModal('loginModal')" class="btn-secondary hidden sm:block text-xs">Log in</button>
-        <button onclick="showModal('signupModal')" class="btn-primary text-xs">Get Started</button>
+        <button onclick="showModal('loginModal')" class="btn-primary text-xs hidden sm:block">Log in</button>
+        <button onclick="showModal('signupModal')" class="btn-solid text-xs">Get Started</button>
       </div>
-      <button id="newChatBtn" class="hidden p-2.5 hover:bg-white/80 rounded-xl transition-all active:scale-95" onclick="resetChat()" aria-label="New chat">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <button id="newChatBtn" class="hidden p-2.5 hover:bg-black/[0.04] rounded-xl transition-all active:scale-95" onclick="resetChat()" aria-label="New chat">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="text-gray-400"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
     </div>
   </header>
 
-  <!-- Center Content / Hero -->
-  <section id="heroSection" class="flex-1 flex flex-col items-center justify-center px-4 pb-8 pt-2 relative">
-    <div class="text-center mb-10 max-w-2xl px-4">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 border border-gray-200/60 text-xs font-medium text-gray-600 mb-6 shadow-sm">
-        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+  <!-- Hero Section -->
+  <section id="heroSection" class="flex-1 flex flex-col items-center justify-center px-4 pb-8 pt-4">
+    <div class="text-center mb-10 max-w-2xl mx-auto px-4">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium text-gray-400 mb-8" style="background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.06);">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" style="box-shadow:0 0 8px rgba(16,185,129,0.4);"></span>
         Powered by Advanced AI
       </div>
-      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-5 leading-[1.1] tracking-tight text-gray-900">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-5 leading-[1.1] tracking-tight text-gray-900 flex items-center justify-center">
         <span class="typing-wrapper">
-          <span id="typedText"></span><span class="typing-cursor"></span>
+          <span id="typedText" class="text-gray-900"></span><span class="typing-cursor"></span>
         </span>
       </h1>
-      <p class="text-base text-gray-500 mt-5 font-normal max-w-lg mx-auto leading-relaxed">Your intelligent companion for research, coding, writing, and creative exploration.</p>
+      <p class="text-base text-gray-400 mt-5 font-normal max-w-lg mx-auto leading-relaxed">Your intelligent companion for research, coding, writing, and creative exploration.</p>
     </div>
-    
-    <div class="search-container glass-input px-6 py-4 flex items-center gap-4 mb-8 shadow-xl">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" class="flex-shrink-0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <textarea 
+
+    <!-- Search Box -->
+    <div class="search-container liquid-glass-input px-6 py-4 flex items-center gap-4">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="flex-shrink-0 text-gray-300"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <textarea
         id="mainInput"
         placeholder="Ask LuvAi anything..."
         rows="1"
-        class="flex-1 bg-transparent text-[15px] text-gray-800 placeholder:text-gray-400 min-w-0 font-normal input-enhanced auto-resize border-none"
+        class="clean-input auto-resize flex-1 min-w-0"
         onkeydown="handleKeyDown(event)"
         oninput="autoResize(this); mainSendBtn.disabled = !this.value.trim() || checkLimitReached()"
         autocomplete="off"
@@ -841,11 +667,9 @@
       </button>
     </div>
 
-    <!-- Dynamic Suggestions -->
-    <div id="suggestionsContainer" class="flex flex-wrap gap-3 justify-center max-w-2xl mb-8 px-2">
-      <!-- Populated by JS -->
-    </div>
-    
+    <!-- Suggestions -->
+    <div id="suggestionsContainer" class="flex flex-wrap gap-3 justify-center max-w-2xl mt-8 mb-6 px-2"></div>
+
     <div id="messageLimitInfo" class="mt-4 hidden">
       <div class="limit-badge">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
@@ -855,45 +679,41 @@
   </section>
 
   <!-- Chat Section -->
-  <section id="chatSection" class="hidden flex-1 flex flex-col px-4 md:px-8 lg:px-12 pb-4 max-w-4xl mx-auto w-full relative">
+  <section id="chatSection" class="hidden flex-1 flex flex-col px-4 md:px-8 pb-4 max-w-4xl mx-auto w-full relative">
     <div id="chatMessages" class="flex-1 overflow-y-auto space-y-6 py-6 scroll-smooth px-2"></div>
-    
+
     <!-- Typing Indicator -->
     <div id="typingIndicator" class="hidden py-4">
       <div class="flex items-start gap-3">
-        <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center flex-shrink-0 shadow-lg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        </div>
-        <div class="glass-panel px-5 py-4 rounded-[22px] rounded-tl-sm shadow-lg">
+        <img src="https://images.luviio.com/luviio-logo-circle-v1.png" class="w-9 h-9 rounded-2xl object-cover flex-shrink-0" style="box-shadow:0 4px 16px rgba(15,23,42,0.1);" alt="LuvAi"/>
+        <div class="liquid-glass px-5 py-4 rounded-[22px] rounded-tl-sm">
           <div class="dot-container">
             <div class="dot"></div><div class="dot"></div><div class="dot"></div>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- Chat Input Area -->
-    <div class="pb-6 pt-4 sticky bottom-0 z-10">
-      <div id="chatSuggestions" class="flex flex-wrap gap-2 justify-center mb-4 hidden">
-        <!-- Dynamic suggestions -->
-      </div>
-      
+
+    <!-- Chat Input -->
+    <div class="pb-4 pt-3">
+      <div id="chatSuggestions" class="flex flex-wrap gap-2 justify-center mb-4 hidden"></div>
+
       <div class="flex items-center justify-between mb-3 px-1">
         <div id="chatLimitBadge" class="limit-badge text-[11px]">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12h6"/></svg>
           <span id="chatLimitText">0 / 2 messages</span>
         </div>
-        <button onclick="showModal(user ? 'signupModal' : 'loginModal')" id="upgradeBtn" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 transition-colors hidden flex items-center gap-1">
+        <button onclick="showModal(user?'signupModal':'loginModal')" id="upgradeBtn" class="text-[11px] font-bold text-gray-900 hover:text-gray-700 transition-colors hidden flex items-center gap-1">
           Upgrade for unlimited <span>→</span>
         </button>
       </div>
-      
-      <div class="search-container glass-input px-5 py-4 flex items-end gap-3 shadow-xl">
-        <textarea 
+
+      <div class="search-container liquid-glass-input px-5 py-4 flex items-end gap-3">
+        <textarea
           id="chatInput"
           placeholder="Continue conversation..."
           rows="1"
-          class="flex-1 bg-transparent text-[15px] placeholder:text-gray-400 min-w-0 font-normal input-enhanced auto-resize border-none"
+          class="clean-input auto-resize flex-1 min-w-0"
           onkeydown="handleChatKeyDown(event)"
           oninput="autoResize(this); chatSendBtn.disabled = !this.value.trim() || checkLimitReached()"
         ></textarea>
@@ -901,99 +721,164 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
         </button>
       </div>
-      
-      <!-- Disclaimer -->
-      <div class="mt-4 text-center">
-        <p class="text-[10.5px] text-gray-400 font-medium flex items-center justify-center gap-1.5 flex-wrap">
+
+      <div class="mt-3 text-center">
+        <p class="text-[10.5px] text-gray-300 font-medium flex items-center justify-center gap-1.5 flex-wrap">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="flex-shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           LuvAi can make mistakes. Please double-check important information.
         </p>
-        <div class="flex items-center justify-center gap-4 mt-2 text-[10.5px] text-gray-400">
-          <a href="https://luviio.com/terms" target="_blank" rel="noopener noreferrer" class="hover:text-gray-600 transition-colors underline decoration-gray-300 underline-offset-2">Terms</a>
+        <div class="flex items-center justify-center gap-4 mt-1.5 text-[10.5px] text-gray-300">
+          <a href="https://luviio.com/terms" target="_blank" rel="noopener noreferrer" class="hover:text-gray-500 transition-colors">Terms</a>
           <span>·</span>
-          <a href="https://luviio.com/privacy" target="_blank" rel="noopener noreferrer" class="hover:text-gray-600 transition-colors underline decoration-gray-300 underline-offset-2">Privacy Policy</a>
+          <a href="https://luviio.com/privacy" target="_blank" rel="noopener noreferrer" class="hover:text-gray-500 transition-colors">Privacy Policy</a>
         </div>
       </div>
     </div>
   </section>
-
 </main>
 
 <!-- Login Modal -->
 <div id="loginModal" class="modal-overlay">
-  <div class="modal-content glass-panel rounded-3xl p-8 w-full max-w-md mx-4 relative shadow-2xl">
-    <button onclick="hideModals()" class="absolute top-5 right-5 p-2.5 hover:bg-black/5 rounded-xl transition-all hover:rotate-90 duration-300 z-10">
+  <div class="modal-content liquid-glass-strong rounded-3xl p-8 w-full max-w-md mx-4 relative">
+    <button onclick="hideModals()" class="absolute top-5 right-5 p-2.5 hover:bg-black/[0.04] rounded-xl transition-all hover:rotate-90 duration-300 z-10 text-gray-400 hover:text-gray-900">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
-    
-    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center mb-6 shadow-lg mx-auto">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+
+    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 mx-auto" style="background:linear-gradient(135deg,rgba(15,23,42,0.1) 0%,rgba(30,41,59,0.05) 100%);border:1px solid rgba(0,0,0,0.06);">
+      <img src="https://images.luviio.com/luviio-logo-circle-v1.png" class="w-8 h-8 rounded-lg object-cover" alt="LuvAi"/>
     </div>
-    
-    <h2 class="text-2xl font-bold mb-2 tracking-tight text-center">Welcome back</h2>
-    <p class="text-gray-500 mb-8 text-sm text-center">Sign in to continue your journey with LuvAi</p>
-    
+
+    <h2 class="text-2xl font-bold mb-2 tracking-tight text-center text-gray-900">Welcome back</h2>
+    <p class="text-gray-400 mb-8 text-sm text-center">Sign in to continue your journey with LuvAi</p>
+
     <div class="space-y-4">
-      <button onclick="googleSignIn()" class="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50/50 transition-all text-sm font-semibold text-gray-700 shadow-sm hover:shadow-md">
+      <button onclick="googleSignIn()" class="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl transition-all text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-black/[0.04]" style="background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.08);">
         <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
         Continue with Google
       </button>
-      
+
       <div class="flex items-center gap-4 my-3">
-        <div class="flex-1 h-px bg-gray-200"></div>
-        <span class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">or</span>
-        <div class="flex-1 h-px bg-gray-200"></div>
+        <div class="flex-1 h-px bg-black/[0.06]"></div>
+        <span class="text-[10px] text-gray-300 uppercase tracking-widest font-semibold">or</span>
+        <div class="flex-1 h-px bg-black/[0.06]"></div>
       </div>
-      
+
       <form onsubmit="emailLogin(event)" class="space-y-4">
-        <input type="email" id="loginEmail" placeholder="Email address" required class="w-full px-5 py-3.5 rounded-2xl border-2 border-gray-200 focus:border-gray-400 focus:ring-4 focus:ring-gray-100/50 transition-all text-sm font-medium"/>
-        <input type="password" id="loginPassword" placeholder="Password" required class="w-full px-5 py-3.5 rounded-2xl border-2 border-gray-200 focus:border-gray-400 focus:ring-4 focus:ring-gray-100/50 transition-all text-sm font-medium"/>
-        <button type="submit" class="btn-primary w-full py-3.5 text-sm">Sign In</button>
+        <input type="email" id="loginEmail" placeholder="Email address" required class="modal-input"/>
+        <input type="password" id="loginPassword" placeholder="Password" required class="modal-input"/>
+        <button type="submit" class="btn-solid w-full py-3.5 text-sm">Sign In</button>
       </form>
     </div>
-    
-    <p class="text-center text-sm text-gray-500 mt-8">
-      Don't have an account? <button onclick="switchModal('signupModal')" class="font-bold text-gray-800 hover:text-black underline decoration-gray-300 underline-offset-4 transition-colors">Create account</button>
+
+    <p class="text-center text-sm text-gray-400 mt-8">
+      Don't have an account? <button onclick="switchModal('signupModal')" class="font-bold text-gray-900 hover:text-gray-700 transition-colors">Create account</button>
     </p>
   </div>
 </div>
 
 <!-- Signup Modal -->
 <div id="signupModal" class="modal-overlay">
-  <div class="modal-content glass-panel rounded-3xl p-8 w-full max-w-md mx-4 relative shadow-2xl">
-    <button onclick="hideModals()" class="absolute top-5 right-5 p-2.5 hover:bg-black/5 rounded-xl transition-all hover:rotate-90 duration-300 z-10">
+  <div class="modal-content liquid-glass-strong rounded-3xl p-8 w-full max-w-md mx-4 relative">
+    <button onclick="hideModals()" class="absolute top-5 right-5 p-2.5 hover:bg-black/[0.04] rounded-xl transition-all hover:rotate-90 duration-300 z-10 text-gray-400 hover:text-gray-900">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
-    
-    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center mb-6 shadow-lg mx-auto">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+
+    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 mx-auto" style="background:linear-gradient(135deg,rgba(15,23,42,0.1) 0%,rgba(30,41,59,0.05) 100%);border:1px solid rgba(0,0,0,0.06);">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
     </div>
-    
-    <h2 class="text-2xl font-bold mb-2 tracking-tight text-center">Create account</h2>
-    <p class="text-gray-500 mb-8 text-sm text-center">Start exploring with LuvAi today</p>
-    
+
+    <h2 class="text-2xl font-bold mb-2 tracking-tight text-center text-gray-900">Create account</h2>
+    <p class="text-gray-400 mb-8 text-sm text-center">Start exploring with LuvAi today</p>
+
     <div class="space-y-4">
-      <button onclick="googleSignUp()" class="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50/50 transition-all text-sm font-semibold text-gray-700 shadow-sm hover:shadow-md">
+      <button onclick="googleSignUp()" class="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl transition-all text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-black/[0.04]" style="background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.08);">
         <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
         Continue with Google
       </button>
-      
+
       <div class="flex items-center gap-4 my-3">
-        <div class="flex-1 h-px bg-gray-200"></div>
-        <span class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">or</span>
-        <div class="flex-1 h-px bg-gray-200"></div>
+        <div class="flex-1 h-px bg-black/[0.06]"></div>
+        <span class="text-[10px] text-gray-300 uppercase tracking-widest font-semibold">or</span>
+        <div class="flex-1 h-px bg-black/[0.06]"></div>
       </div>
-      
+
       <form onsubmit="emailSignup(event)" class="space-y-4">
-        <input type="email" id="signupEmail" placeholder="Email address" required class="w-full px-5 py-3.5 rounded-2xl border-2 border-gray-200 focus:border-gray-400 focus:ring-4 focus:ring-gray-100/50 transition-all text-sm font-medium"/>
-        <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required minlength="6" class="w-full px-5 py-3.5 rounded-2xl border-2 border-gray-200 focus:border-gray-400 focus:ring-4 focus:ring-gray-100/50 transition-all text-sm font-medium"/>
-        <button type="submit" class="btn-primary w-full py-3.5 text-sm">Create Account</button>
+        <input type="email" id="signupEmail" placeholder="Email address" required class="modal-input"/>
+        <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required minlength="6" class="modal-input"/>
+        <button type="submit" class="btn-solid w-full py-3.5 text-sm">Create Account</button>
       </form>
     </div>
-    
-    <p class="text-center text-sm text-gray-500 mt-8">
-      Already have an account? <button onclick="switchModal('loginModal')" class="font-bold text-gray-800 hover:text-black underline decoration-gray-300 underline-offset-4 transition-colors">Sign in</button>
+
+    <p class="text-center text-sm text-gray-400 mt-8">
+      Already have an account? <button onclick="switchModal('loginModal')" class="font-bold text-gray-900 hover:text-gray-700 transition-colors">Sign in</button>
     </p>
+  </div>
+</div>
+
+<!-- Profile Modal -->
+<div id="profileModal" class="profile-modal-overlay">
+  <div class="modal-content liquid-glass-strong rounded-3xl p-8 w-full max-w-md mx-4 relative" style="transform:scale(0.93) translateY(24px);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);">
+    <button onclick="hideProfileModal()" class="absolute top-5 right-5 p-2.5 hover:bg-black/[0.04] rounded-xl transition-all hover:rotate-90 duration-300 z-10 text-gray-400 hover:text-gray-900">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <!-- Profile Header -->
+    <div class="text-center mb-8">
+      <img id="profileAvatar" src="https://images.luviio.com/luviio-logo-circle-v1.png" class="w-20 h-20 rounded-full mx-auto mb-4 object-cover" style="border:3px solid rgba(15,23,42,0.1);box-shadow:0 0 30px rgba(15,23,42,0.08);" alt="Avatar"/>
+      <h2 id="profileName" class="text-xl font-bold text-gray-900">User</h2>
+      <p id="profileEmail" class="text-sm text-gray-400 mt-1">user@email.com</p>
+    </div>
+
+    <!-- Account Info -->
+    <div class="space-y-3 mb-6">
+      <div class="flex items-center justify-between p-4 rounded-2xl" style="background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.04);">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:rgba(15,23,42,0.06);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-gray-400">Account Type</p>
+            <p id="profileType" class="text-sm font-bold text-gray-900">Free</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between p-4 rounded-2xl" style="background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.04);">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:rgba(16,185,129,0.08);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-gray-400">Messages Today</p>
+            <p id="profileMessages" class="text-sm font-bold text-gray-900">0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between p-4 rounded-2xl" style="background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.04);">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:rgba(245,158,11,0.08);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-gray-400">Member Since</p>
+            <p id="profileDate" class="text-sm font-bold text-gray-900">Today</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="space-y-3">
+      <button onclick="hideProfileModal(); showModal('signupModal');" class="btn-solid w-full py-3 text-sm flex items-center justify-center gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Upgrade to Pro
+      </button>
+      <button onclick="signOut(); hideProfileModal();" class="w-full py-3 rounded-2xl text-sm font-semibold text-gray-400 hover:text-gray-700 transition-all flex items-center justify-center gap-2" style="background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.04);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1002,13 +887,13 @@
 // FIREBASE CONFIGURATION
 // ============================================
 const firebaseConfig = {
-  apiKey: "AIzaSyDSp-HX00hZaJwTFaZ4X06pU7pARGjhl1M",
-  authDomain: "appluviio.firebaseapp.com",
-  projectId: "appluviio",
-  storageBucket: "appluviio.firebasestorage.app",
-  messagingSenderId: "598571208819",
-  appId: "1:598571208819:web:1a91c501b49b3e604d5a06",
-  measurementId: "G-MZ96FCCJ1K"
+  apiKey:"AIzaSyDSp-HX00hZaJwTFaZ4X06pU7pARGjhl1M",
+  authDomain:"appluviio.firebaseapp.com",
+  projectId:"appluviio",
+  storageBucket:"appluviio.firebasestorage.app",
+  messagingSenderId:"598571208819",
+  appId:"1:598571208819:web:1a91c501b49b3e604d5a06",
+  measurementId:"G-MZ96FCCJ1K"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -1020,26 +905,24 @@ const provider = new firebase.auth.GoogleAuthProvider();
 // OPENROUTER CONFIGURATION
 // ============================================
 const OPENROUTER_KEY = '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';
-
 const MODELS = {
-  guest: ['inclusionai/ling-2.6-flash:free', 'google/gemma-4-31b-it:free'],
-  user: ['openai/gpt-4o-mini', 'anthropic/claude-sonnet-4']
+  guest:['inclusionai/ling-2.6-flash:free','google/gemma-4-31b-it:free'],
+  user:['openai/gpt-4o-mini','anthropic/claude-sonnet-4']
 };
 
 // ============================================
-// SUGGESTION POOLS (Rotating)
+// SUGGESTION POOLS
 // ============================================
 const suggestionPools = [
-  ["Explain quantum computing simply", "Write a professional email", "Debug Python code", "Summarize research paper", "Brainstorm startup ideas", "Compare React vs Vue"],
-  ["What is machine learning?", "Help me write poetry", "Optimize SQL query", "Plan Japan itinerary", "Design REST API", "Explain blockchain basics"],
-  ["How does AI work?", "Create marketing plan", "Fix JavaScript error", "Healthy meal prep ideas", "SWOT analysis template", "Learn Rust programming"],
-  ["Future of renewable energy", "Draft cover letter", "CSS Grid vs Flexbox", "Book recommendations", "Investment strategies", "Data structures explained"]
+  ["Explain quantum computing simply","Write a professional email","Debug Python code","Summarize research paper","Brainstorm startup ideas","Compare React vs Vue"],
+  ["What is machine learning?","Help me write poetry","Optimize SQL query","Plan Japan itinerary","Design REST API","Explain blockchain basics"],
+  ["How does AI work?","Create marketing plan","Fix JavaScript error","Healthy meal prep ideas","SWOT analysis template","Learn Rust programming"],
+  ["Future of renewable energy","Draft cover letter","CSS Grid vs Flexbox","Book recommendations","Investment strategies","Data structures explained"]
 ];
-
 let currentSuggestionSet = 0;
 
 function rotateSuggestions() {
-  currentSuggestionSet = (currentSuggestionSet + 1) % suggestionPools.length;
+  currentSuggestionSet = (currentSuggestionSet+1) % suggestionPools.length;
   renderSuggestions();
 }
 
@@ -1047,25 +930,22 @@ function renderSuggestions() {
   const container = document.getElementById('suggestionsContainer');
   const chatContainer = document.getElementById('chatSuggestions');
   const suggestions = suggestionPools[currentSuggestionSet];
-  
-  container.innerHTML = suggestions.map(s => 
-    `<button class="suggest-chip" onclick="quickAsk('${s.replace(/'/g, "\'")}')">${s}</button>`
+  container.innerHTML = suggestions.map(s =>
+    `<button class="suggest-chip" onclick="quickAsk('${s.replace(/'/g,"\\'")}')">${s}</button>`
   ).join('');
-  
   if (!chatSection.classList.contains('hidden')) {
-    chatContainer.innerHTML = suggestions.slice(0, 4).map(s => 
-      `<button class="suggest-chip" onclick="quickAskInChat('${s.replace(/'/g, "\'")}')">${s}</button>`
+    chatContainer.innerHTML = suggestions.slice(0,4).map(s =>
+      `<button class="suggest-chip" onclick="quickAskInChat('${s.replace(/'/g,"\\'")}')">${s}</button>`
     ).join('');
     chatContainer.classList.remove('hidden');
   } else {
     chatContainer.classList.add('hidden');
   }
 }
-
 setInterval(rotateSuggestions, 10000);
 
 // ============================================
-// STATE MANAGEMENT
+// STATE
 // ============================================
 let user = null;
 let currentConversationId = null;
@@ -1073,84 +953,49 @@ let messages = [];
 let isBusy = false;
 let messageCount = 0;
 const MAX_MESSAGES_GUEST = 2;
-const MAX_MESSAGES_USER = 5;
+const MAX_MESSAGES_USER = 50;
 
-// Typing Effect State
-const typingTexts = [
-  "What can I help you research?",
-  "Need help with code or writing?",
-  "Let's explore ideas together.",
-  "How can I assist you today?",
-  "Ready when you are.",
-  "Ask me anything."
-];
-let currentTextIndex = 0;
+// ============================================
+// TYPING ANIMATION (Single Phrase: "Ask me anything.")
+// ============================================
+const typingTargetText = "Ask me anything.";
 let currentCharIndex = 0;
 let isDeleting = false;
-let typingSpeed = 60;
-
-// DOM Elements
-const mainInput = document.getElementById('mainInput');
-const mainSendBtn = document.getElementById('mainSendBtn');
-const chatInput = document.getElementById('chatInput');
-const chatSendBtn = document.getElementById('chatSendBtn');
-const heroSection = document.getElementById('heroSection');
-const chatSection = document.getElementById('chatSection');
-const chatMessages = document.getElementById('chatMessages');
-const typingIndicator = document.getElementById('typingIndicator');
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-const authButtons = document.getElementById('authButtons');
-const newChatBtn = document.getElementById('newChatBtn');
-const userSection = document.getElementById('userSection');
-const guestSection = document.getElementById('guestSection');
+let typingSpeed = 80;
 const typedTextEl = document.getElementById('typedText');
-const limitText = document.getElementById('limitText');
-const chatLimitText = document.getElementById('chatLimitText');
-const messageLimitInfo = document.getElementById('messageLimitInfo');
-const upgradeBtn = document.getElementById('upgradeBtn');
-const historyNav = document.getElementById('historyNav');
 
-// ============================================
-// TYPING EFFECT - Fixed Layout Shift
-// ============================================
 function typeEffect() {
-  const currentText = typingTexts[currentTextIndex];
-  const wrapper = document.querySelector('.typing-wrapper');
-  
-  // Set min-width based on longest text to prevent jumping
-  const maxLength = Math.max(...typingTexts.map(t => t.length));
-  wrapper.style.minWidth = `${maxLength * 0.58}em`;
-  
-  if (isDeleting) {
-    typedTextEl.textContent = currentText.substring(0, currentCharIndex - 1);
-    currentCharIndex--;
-    typingSpeed = 30;
-  } else {
-    typedTextEl.textContent = currentText.substring(0, currentCharIndex + 1);
+  if (!isDeleting) {
+    // Typing forward
     currentCharIndex++;
-    typingSpeed = 60 + Math.random() * 50;
-  }
+    typedTextEl.textContent = typingTargetText.substring(0, currentCharIndex);
+    typingSpeed = 70 + Math.random() * 50;
 
-  if (!isDeleting && currentCharIndex === currentText.length) {
-    isDeleting = true;
-    typingSpeed = 2500; // Pause at end
-  } else if (isDeleting && currentCharIndex === 0) {
-    isDeleting = false;
-    currentTextIndex = (currentTextIndex + 1) % typingTexts.length;
-    typingSpeed = 400; // Pause before next word
-  }
+    if (currentCharIndex === typingTargetText.length) {
+      // Pause at the end of the phrase
+      isDeleting = true;
+      typingSpeed = 3000; // Wait 3 seconds before deleting
+    }
+  } else {
+    // Deleting
+    currentCharIndex--;
+    typedTextEl.textContent = typingTargetText.substring(0, currentCharIndex);
+    typingSpeed = 35;
 
+    if (currentCharIndex === 0) {
+      isDeleting = false;
+      typingSpeed = 500; // Pause before typing again
+    }
+  }
   setTimeout(typeEffect, typingSpeed);
 }
-
 typeEffect();
 renderSuggestions();
 
 // ============================================
-// AUTH LISTENERS & FIREBASE INTEGRATION
+// AUTH
 // ============================================
-auth.onAuthStateChanged(async (u) => {
+auth.onAuthStateChanged(async(u) => {
   user = u;
   if (user) {
     showLoggedInState();
@@ -1161,90 +1006,19 @@ auth.onAuthStateChanged(async (u) => {
   updateLimitDisplay();
 });
 
-async function loadChatHistory() {
-  if (!user) return;
-  try {
-    const snapshot = await db.collection('luvai_texthistory')
-      .where('userId', '==', user.uid)
-      .orderBy('updatedAt', 'desc')
-      .limit(10)
-      .get();
-    
-    historyNav.innerHTML = '';
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const div = document.createElement('div');
-      div.className = 'history-item';
-      div.innerHTML = `
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="flex-shrink-0 text-gray-400"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <span class="truncate">${escHtml(data.title || 'New Conversation')}</span>
-      `;
-      div.onclick = () => loadConversation(doc.id, data.messages);
-      historyNav.appendChild(div);
-    });
-  } catch (error) {
-    console.error('Error loading history:', error);
-  }
-}
-
-async function saveToFirestore(messagesArray) {
-  if (!user || !currentConversationId) return;
-  try {
-    await db.collection('luvai_texthistory').doc(currentConversationId).set({
-      userId: user.uid,
-      messages: messagesArray,
-      title: messagesArray[0]?.content?.substring(0, 50) || 'New Chat',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-  } catch (error) {
-    console.error('Error saving:', error);
-  }
-}
-
-async function createNewConversationDoc() {
-  if (!user) return;
-  try {
-    const docRef = await db.collection('luvai_texthistory').add({
-      userId: user.uid,
-      messages: [],
-      title: 'New Chat',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    currentConversationId = docRef.id;
-  } catch (error) {
-    console.error('Error creating conversation:', error);
-  }
-}
-
-async function loadConversation(convId, msgs) {
-  currentConversationId = convId;
-  messages = msgs || [];
-  messageCount = messages.filter(m => m.role === 'user').length;
-  
-  heroSection.classList.add('hidden');
-  chatSection.classList.remove('hidden');
-  newChatBtn.classList.remove('hidden');
-  messageLimitInfo.classList.add('hidden');
-  
-  chatMessages.innerHTML = '';
-  messages.forEach((msg, idx) => {
-    addMessage(msg.content, msg.role, false);
-  });
-  
-  toggleSidebar();
-  updateLimitDisplay();
-  scrollToBottom();
-}
-
 function showLoggedInState() {
   authButtons.classList.add('hidden');
   newChatBtn.classList.remove('hidden');
   userSection.classList.remove('hidden');
   guestSection.classList.add('hidden');
-  document.getElementById('userEmail').textContent = user.email || 'User';
-  document.getElementById('userAvatar').textContent = (user.email || 'U')[0].toUpperCase();
+
+  const email = user.email || 'User';
+  const name = user.displayName || email.split('@')[0];
+  const photoURL = user.photoURL || 'https://images.luviio.com/luviio-logo-circle-v1.png';
+
+  document.getElementById('userName').textContent = name;
+  document.getElementById('userEmailSidebar').textContent = email;
+  document.getElementById('userAvatarSidebar').src = photoURL;
 }
 
 function showLoggedOutState() {
@@ -1264,49 +1038,145 @@ function updateLimitDisplay() {
     chatLimitText.textContent = `${messageCount} / ${max} messages`;
     if (messageCount >= max && !user) {
       upgradeBtn.classList.remove('hidden');
+      upgradeBtn.style.display = 'flex';
       chatSendBtn.disabled = true;
       mainSendBtn.disabled = true;
     } else {
       upgradeBtn.classList.add('hidden');
+      upgradeBtn.style.display = 'none';
     }
   }
 }
 
 // ============================================
+// FIRESTORE
+// ============================================
+async function loadChatHistory() {
+  if (!user) return;
+  try {
+    const snapshot = await db.collection('luvai_texthistory')
+      .where('userId','==',user.uid)
+      .orderBy('updatedAt','desc')
+      .limit(10)
+      .get();
+    historyNav.innerHTML = '';
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const div = document.createElement('div');
+      div.className = 'history-item';
+      div.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="flex-shrink-0 text-gray-300"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="truncate">${escHtml(data.title||'New Conversation')}</span>
+      `;
+      div.onclick = () => loadConversation(doc.id, data.messages);
+      historyNav.appendChild(div);
+    });
+  } catch(e) { console.error(e); }
+}
+
+async function saveToFirestore(messagesArray) {
+  if (!user || !currentConversationId) return;
+  try {
+    await db.collection('luvai_texthistory').doc(currentConversationId).set({
+      userId:user.uid,
+      messages:messagesArray,
+      title:messagesArray[0]?.content?.substring(0,50)||'New Chat',
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+  } catch(e) { console.error(e); }
+}
+
+async function createNewConversationDoc() {
+  if (!user) return;
+  try {
+    const docRef = await db.collection('luvai_texthistory').add({
+      userId:user.uid,messages:[],title:'New Chat',
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    currentConversationId = docRef.id;
+  } catch(e) { console.error(e); }
+}
+
+async function loadConversation(convId,msgs) {
+  currentConversationId = convId;
+  messages = msgs || [];
+  messageCount = messages.filter(m=>m.role==='user').length;
+  heroSection.classList.add('hidden');
+  chatSection.classList.remove('hidden');
+  newChatBtn.classList.remove('hidden');
+  messageLimitInfo.classList.add('hidden');
+  chatMessages.innerHTML = '';
+  messages.forEach(msg => addMessage(msg.content, msg.role, false));
+  if (window.innerWidth < 1024) toggleSidebar();
+  updateLimitDisplay();
+  scrollToBottom();
+}
+
+// ============================================
 // AUTH FUNCTIONS
 // ============================================
-function googleSignIn() { 
-  auth.signInWithPopup(provider).catch(err => alert(err.message)); 
-}
-function googleSignUp() { 
-  auth.signInWithPopup(provider).catch(err => alert(err.message)); 
-}
+function googleSignIn() { auth.signInWithPopup(provider).catch(err=>alert(err.message)); }
+function googleSignUp() { auth.signInWithPopup(provider).catch(err=>alert(err.message)); }
 function emailLogin(e) {
   e.preventDefault();
-  auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value).catch(err => alert(err.message));
+  auth.signInWithEmailAndPassword(
+    document.getElementById('loginEmail').value,
+    document.getElementById('loginPassword').value
+  ).catch(err=>alert(err.message));
 }
 function emailSignup(e) {
   e.preventDefault();
-  auth.createUserWithEmailAndPassword(document.getElementById('signupEmail').value, document.getElementById('signupPassword').value).catch(err => alert(err.message));
+  auth.createUserWithEmailAndPassword(
+    document.getElementById('signupEmail').value,
+    document.getElementById('signupPassword').value
+  ).catch(err=>alert(err.message));
 }
-function signOut() {
-  auth.signOut().then(() => { resetChat(); toggleSidebar(); });
-}
+function signOut() { auth.signOut().then(()=>{ resetChat(); }); }
 
 // ============================================
-// MODAL FUNCTIONS
+// MODALS
 // ============================================
 function showModal(id) { document.getElementById(id).classList.add('show'); }
-function hideModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show')); }
-function switchModal(id) { hideModals(); setTimeout(() => showModal(id), 150); }
+function hideModals() { document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('show')); }
+function switchModal(id) { hideModals(); setTimeout(()=>showModal(id),150); }
+
+function showProfileModal() {
+  if (!user) return;
+  const photoURL = user.photoURL || 'https://images.luviio.com/luviio-logo-circle-v1.png';
+  const name = user.displayName || (user.email||'User').split('@')[0];
+  document.getElementById('profileAvatar').src = photoURL;
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileEmail').textContent = user.email || '';
+  document.getElementById('profileType').textContent = 'Free';
+  document.getElementById('profileMessages').textContent = messageCount.toString();
+  const created = user.metadata?.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString() : 'Today';
+  document.getElementById('profileDate').textContent = created;
+  const pm = document.getElementById('profileModal');
+  pm.classList.add('show');
+  pm.querySelector('.modal-content').style.transform = 'scale(1) translateY(0)';
+}
+function hideProfileModal() {
+  const pm = document.getElementById('profileModal');
+  pm.querySelector('.modal-content').style.transform = 'scale(0.93) translateY(24px)';
+  setTimeout(()=>pm.classList.remove('show'), 100);
+}
 
 // ============================================
-// SIDEBAR TOGGLE
+// SIDEBAR (Always Toggles)
 // ============================================
 function toggleSidebar() {
-  sidebar.classList.toggle('open');
-  if (window.innerWidth < 1024) overlay.classList.toggle('hidden', !sidebar.classList.contains('open'));
+  const isOpen = sidebar.classList.toggle('open');
+  if (window.innerWidth < 1024) {
+    overlay.classList.toggle('hidden', !isOpen);
+  }
+  mainContent.classList.toggle('main-shift', isOpen);
 }
+
+// Start with sidebar CLOSED on all screen sizes
+// (User can open it by clicking the hamburger menu)
+overlay.classList.add('hidden');
 
 document.addEventListener('click', (e) => {
   if (window.innerWidth < 1024 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !e.target.closest('[onclick*="toggleSidebar"]')) {
@@ -1315,242 +1185,180 @@ document.addEventListener('click', (e) => {
 });
 
 // ============================================
-// UTILITY FUNCTIONS
+// UTILITY
 // ============================================
 function autoResize(el) {
   el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 150) + 'px';
+  el.style.height = Math.min(el.scrollHeight, 150)+'px';
 }
-
 function handleKeyDown(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    if (!mainSendBtn.disabled) sendMessage();
-  }
+  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); if (!mainSendBtn.disabled) sendMessage(); }
 }
-
 function handleChatKeyDown(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    if (!chatSendBtn.disabled) sendChatMessage();
-  }
+  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); if (!chatSendBtn.disabled) sendChatMessage(); }
 }
-
-function checkLimitReached() {
-  return messageCount >= (user ? MAX_MESSAGES_USER : MAX_MESSAGES_GUEST);
-}
-
-function quickAsk(text) {
-  mainInput.value = text;
-  autoResize(mainInput);
-  mainSendBtn.disabled = checkLimitReached();
-  sendMessage();
-}
-
-function quickAskInChat(text) {
-  chatInput.value = text;
-  autoResize(chatInput);
-  chatSendBtn.disabled = checkLimitReached();
-  sendChatMessage();
-}
+function checkLimitReached() { return messageCount >= (user ? MAX_MESSAGES_USER : MAX_MESSAGES_GUEST); }
+function quickAsk(text) { mainInput.value=text; autoResize(mainInput); mainSendBtn.disabled=checkLimitReached(); sendMessage(); }
+function quickAskInChat(text) { chatInput.value=text; autoResize(chatInput); chatSendBtn.disabled=checkLimitReached(); sendChatMessage(); }
 
 // ============================================
-// CHAT FUNCTIONS
+// CHAT
 // ============================================
 async function sendMessage() {
   const txt = mainInput.value.trim();
   if (!txt || isBusy || checkLimitReached()) return;
-
-  if (user && !currentConversationId) {
-    await createNewConversationDoc();
-  }
-
+  if (user && !currentConversationId) await createNewConversationDoc();
   heroSection.classList.add('hidden');
   chatSection.classList.remove('hidden');
   newChatBtn.classList.remove('hidden');
   messageLimitInfo.classList.add('hidden');
-
   messageCount++;
   updateLimitDisplay();
-  addMessage(txt, 'user');
-  messages.push({ role: 'user', content: txt });
-
-  mainInput.value = '';
-  mainInput.style.height = 'auto';
-  mainSendBtn.disabled = true;
-  isBusy = true;
-
+  addMessage(txt,'user');
+  messages.push({role:'user',content:txt});
+  mainInput.value=''; mainInput.style.height='auto'; mainSendBtn.disabled=true;
+  isBusy=true;
   await getAIResponse(txt);
 }
 
 async function sendChatMessage() {
   const txt = chatInput.value.trim();
   if (!txt || isBusy || checkLimitReached()) return;
-
-  if (user && !currentConversationId) {
-    await createNewConversationDoc();
-  }
-
+  if (user && !currentConversationId) await createNewConversationDoc();
   messageCount++;
   updateLimitDisplay();
-  addMessage(txt, 'user');
-  messages.push({ role: 'user', content: txt });
-
-  chatInput.value = '';
-  chatInput.style.height = 'auto';
-  chatSendBtn.disabled = true;
-  isBusy = true;
-
+  addMessage(txt,'user');
+  messages.push({role:'user',content:txt});
+  chatInput.value=''; chatInput.style.height='auto'; chatSendBtn.disabled=true;
+  isBusy=true;
   await getAIResponse(txt);
 }
 
 async function getAIResponse(userMsg) {
   typingIndicator.classList.remove('hidden');
   scrollToBottom();
-
   try {
     const availableModels = user ? MODELS.user : MODELS.guest;
     const selectedModel = availableModels[0];
-    
-    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENROUTER_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': window.location.href,
-        'X-Title': 'LuvAi'
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Authorization':`Bearer ${OPENROUTER_KEY}`,
+        'Content-Type':'application/json',
+        'HTTP-Referer':window.location.href,
+        'X-Title':'LuvAi'
       },
-      body: JSON.stringify({
-        model: selectedModel,
-        messages: [
-          { role: 'system', content: `You are LuvAi, an advanced AI assistant by Luviio. You are helpful, precise, concise, and professional. Use markdown formatting for better readability. Always provide accurate information but acknowledge uncertainty when appropriate.` },
+      body:JSON.stringify({
+        model:selectedModel,
+        messages:[
+          {role:'system',content:`You are LuvAi, an advanced AI assistant by Luviio. You are helpful, precise, concise, and professional. Use markdown formatting for better readability. Always provide accurate information but acknowledge uncertainty when appropriate.`},
           ...messages
         ],
-        temperature: 0.7,
-        max_tokens: 2048
+        temperature:0.7,
+        max_tokens:2048
       })
     });
-
     if (!res.ok) throw new Error(`API Error: ${res.status}`);
-
     const data = await res.json();
     const reply = data.choices?.[0]?.message?.content || "I apologize, but I couldn't generate a response at this moment.";
-
     typingIndicator.classList.add('hidden');
-    addMessage(reply, 'assistant');
-    messages.push({ role: 'assistant', content: reply });
-
-    // Save to Firestore
+    addMessage(reply,'assistant');
+    messages.push({role:'assistant',content:reply});
     await saveToFirestore(messages);
-
-  } catch (err) {
+  } catch(err) {
     console.error(err);
     typingIndicator.classList.add('hidden');
-    addMessage(`I'm experiencing some technical difficulties. Please try again in a moment.
-
-*Error: ${err.message}*`, 'error');
+    addMessage(`I'm experiencing technical difficulties. Please try again.\n\n*Error: ${err.message}*`,'error');
   } finally {
-    isBusy = false;
+    isBusy=false;
     updateLimitDisplay();
   }
 }
 
-function addMessage(content, role, animate = true) {
+function addMessage(content, role, animate=true) {
   const div = document.createElement('div');
   div.className = animate ? 'msg-wrap' : '';
+  const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const aiAvatar = `<img src="https://images.luviio.com/luviio-logo-circle-v1.png" class="w-9 h-9 rounded-2xl object-cover flex-shrink-0" style="box-shadow:0 4px 16px rgba(15,23,42,0.1);" alt="LuvAi"/>`;
 
-  if (role === 'user') {
+  if (role==='user') {
     div.innerHTML = `
       <div class="flex justify-end">
-        <div class="bubble-user px-5 py-3.5 max-w-[85%] md:max-w-[75%] shadow-lg">
+        <div class="bubble-user px-5 py-3.5 max-w-[85%] md:max-w-[75%]">
           <p class="text-[14px] leading-relaxed whitespace-pre-wrap">${escHtml(content)}</p>
         </div>
       </div>`;
-  } else if (role === 'error') {
+  } else if (role==='error') {
     div.innerHTML = `
       <div class="flex items-start gap-3">
-        <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center flex-shrink-0 shadow-lg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <div class="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(220,38,38,0.1));border:1px solid rgba(239,68,68,0.1);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
         </div>
-        <div class="flex-1 px-5 py-4 rounded-2xl rounded-tl-sm bg-red-50/90 border border-red-100 shadow-sm max-w-[85%] md:max-w-[75%]">
+        <div class="flex-1 px-5 py-4 rounded-2xl rounded-tl-sm max-w-[85%] md:max-w-[75%]" style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.1);">
           <p class="text-[13px] text-red-700 leading-relaxed">${escHtml(content)}</p>
         </div>
       </div>`;
   } else {
     div.innerHTML = `
       <div class="flex items-start gap-3">
-        <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center flex-shrink-0 shadow-lg mt-1">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        </div>
-        <div class="flex-1 bubble-ai px-5 py-4 max-w-[85%] md:max-width-[75%]">
+        ${aiAvatar}
+        <div class="flex-1 bubble-ai px-5 py-4 max-w-[85%] md:max-w-[75%]">
           <div class="md text-[14px] leading-relaxed text-gray-800">${renderMd(content)}</div>
-          <div class="flex items-center gap-1 mt-4 pt-4 border-t border-gray-100/80">
-            <button onclick="copyText(this)" class="p-2.5 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-all hover:scale-105 active:scale-95" title="Copy response" aria-label="Copy">
+          <div class="flex items-center gap-1 mt-4 pt-3 border-t border-black/[0.04]">
+            <button onclick="copyText(this)" class="p-2 rounded-xl hover:bg-black/[0.04] text-gray-300 hover:text-gray-600 transition-all" title="Copy" aria-label="Copy">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <button onclick="regenerateResponse(this)" class="p-2.5 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-all hover:scale-105 active:scale-95" title="Regenerate response" aria-label="Regenerate">
+            <button onclick="regenerateResponse(this)" class="p-2 rounded-xl hover:bg-black/[0.04] text-gray-300 hover:text-gray-600 transition-all" title="Regenerate" aria-label="Regenerate">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
             </button>
-            <span class="ml-auto text-[10px] text-gray-300 font-medium">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+            <span class="ml-auto text-[10px] text-gray-300 font-medium">${time}</span>
           </div>
         </div>
       </div>`;
   }
-
   chatMessages.appendChild(div);
   scrollToBottom();
 }
 
 function resetChat() {
-  messages = [];
-  messageCount = 0;
-  currentConversationId = null;
-  chatMessages.innerHTML = '';
+  messages=[]; messageCount=0; currentConversationId=null;
+  chatMessages.innerHTML='';
   chatSection.classList.add('hidden');
   heroSection.classList.remove('hidden');
-  mainInput.value = '';
-  mainInput.style.height = 'auto';
-  mainSendBtn.disabled = false;
-  chatInput.value = '';
-  chatInput.style.height = 'auto';
-  chatSendBtn.disabled = false;
+  mainInput.value=''; mainInput.style.height='auto'; mainSendBtn.disabled=false;
+  chatInput.value=''; chatInput.style.height='auto'; chatSendBtn.disabled=false;
   updateLimitDisplay();
   if (messageLimitInfo) messageLimitInfo.classList.remove('hidden');
-  upgradeBtn.classList.add('hidden');
+  upgradeBtn.style.display='none';
   renderSuggestions();
   if (user) loadChatHistory();
 }
 
 function scrollToBottom() {
-  requestAnimationFrame(() => {
-    chatSection.scrollTo({ top: chatSection.scrollHeight, behavior: 'smooth' });
+  requestAnimationFrame(()=>{
+    chatMessages.scrollTo({top:chatMessages.scrollHeight,behavior:'smooth'});
   });
 }
 
 // ============================================
 // UTILITIES
 // ============================================
-function escHtml(t) {
-  const d = document.createElement('div');
-  d.textContent = t;
-  return d.innerHTML;
-}
+function escHtml(t) { const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
 function copyText(btn) {
   const text = btn.closest('.bubble-ai')?.querySelector('.md')?.textContent || '';
-  navigator.clipboard.writeText(text).then(() => {
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
-    setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
-  }).catch(() => {});
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig = btn.innerHTML;
+    btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    setTimeout(()=>btn.innerHTML=orig,2000);
+  }).catch(()=>{});
 }
 
 function regenerateResponse(btn) {
-  if (messages.length >= 2 && !isBusy) {
-    const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
+  if (messages.length>=2 && !isBusy) {
+    const lastUserMsg = [...messages].reverse().find(m=>m.role==='user');
     if (lastUserMsg) {
-      // Remove last AI response if exists
-      while (messages.length > 0 && messages[messages.length - 1].role !== 'user') {
+      while (messages.length>0 && messages[messages.length-1].role!=='user') {
         messages.pop();
         if (chatMessages.lastElementChild) chatMessages.removeChild(chatMessages.lastElementChild);
       }
@@ -1561,62 +1369,58 @@ function regenerateResponse(btn) {
 
 function renderMd(text) {
   let h = escHtml(text);
-
   // Code blocks
-  h = h.replace(/```(\w*)([\s\S]*?)```/g, (_, lang, code) =>
-    `<div class="code-block my-4 overflow-hidden"><div class="flex items-center justify-between px-5 py-3 bg-white/[0.05] border-b border-white/10"><span class="text-gray-400 text-[11px] font-mono font-semibold uppercase tracking-wide">${lang||'code'}</span><button onclick="copyCodeBlock(this)" class="text-[11px] text-gray-400 hover:text-emerald-400 transition-colors font-medium flex items-center gap-1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre class="p-5 overflow-x-auto text-gray-300 leading-relaxed font-mono text-[12px]">${code.trim()}</pre></div>`
+  h = h.replace(/```(\w*)([\s\S]*?)```/g, (_,lang,code)=>
+    `<div class="code-block my-4 overflow-hidden"><div class="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]" style="background:rgba(255,255,255,0.03);"><span class="text-white/40 text-[11px] font-mono font-semibold uppercase tracking-wide">${lang||'code'}</span><button onclick="copyCodeBlock(this)" class="text-[11px] text-white/30 hover:text-emerald-400 transition-colors font-medium flex items-center gap-1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre class="p-5 overflow-x-auto text-white/70 leading-relaxed font-mono text-[12px]">${code.trim()}</pre></div>`
   );
-
-  // Inline code
-  h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
-  
-  // Bold & Italic
-  h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  h = h.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-  
-  // Headers
-  h = h.replace(/^### (.+)$/gm, '<h3 class="text-base font-bold mt-6 mb-2.5 text-gray-900">$1</h3>');
-  h = h.replace(/^## (.+)$/gm, '<h2 class="text-lg font-bold mt-6 mb-2.5 text-gray-900">$1</h2>');
-  h = h.replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold mt-6 mb-3 text-gray-900">$1</h1>');
-  
-  // Lists
-  h = h.replace(/^\- (.+)$/gm, '<li class="ml-5 list-disc marker:text-gray-400 marker:text-sm my-1">$1</li>');
-  h = h.replace(/^\d+\. (.+)$/gm, '<li class="ml-5 list-decimal marker:text-gray-400 marker:text-sm my-1">$1</li>');
-  
-  // Blockquote
-  h = h.replace(/^&gt; (.+)$/gm, '<blockquote class="border-l-4 border-purple-300 pl-4 italic text-gray-600 my-3 bg-purple-50/50 py-2.5 pr-3 rounded-r-xl text-[13.5px]">$1</blockquote>');
-  
-  // Paragraphs
-  h = h.replace(/(?:\n)/g, '</p><p class="mb-3">');
+  h = h.replace(/`([^`]+)`/g,'<code>$1</code>');
+  h = h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  h = h.replace(/\*([^*]+)\*/g,'<em>$1</em>');
+  h = h.replace(/^### (.+)$/gm,'<h3 class="text-base font-bold mt-6 mb-2.5 text-gray-900">$1</h3>');
+  h = h.replace(/^## (.+)$/gm,'<h2 class="text-lg font-bold mt-6 mb-2.5 text-gray-900">$1</h2>');
+  h = h.replace(/^# (.+)$/gm,'<h1 class="text-xl font-bold mt-6 mb-3 text-gray-900">$1</h1>');
+  h = h.replace(/^\- (.+)$/gm,'<li class="ml-5 list-disc marker:text-gray-300 my-1">$1</li>');
+  h = h.replace(/^\d+\. (.+)$/gm,'<li class="ml-5 list-decimal marker:text-gray-300 my-1">$1</li>');
+  h = h.replace(/^&gt; (.+)$/gm,'<blockquote class="border-l-4 border-gray-900/10 pl-4 italic text-gray-500 my-3 py-2.5 pr-3 rounded-r-xl text-[13.5px]" style="background:rgba(15,23,42,0.02);">$1</blockquote>');
+  h = h.replace(/(?:\n)/g,'</p><p class="mb-3">');
   h = `<p>${h}</p>`;
-
   return h;
 }
 
 function copyCodeBlock(btn) {
   const code = btn.closest('.code-block').querySelector('pre').textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-    setTimeout(() => btn.innerHTML = originalHTML, 2000);
+  navigator.clipboard.writeText(code).then(()=>{
+    const orig = btn.innerHTML;
+    btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    setTimeout(()=>btn.innerHTML=orig,2000);
   });
 }
 
 // Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { 
-    e.preventDefault(); 
-    resetChat(); 
-  }
-  if (e.key === 'Escape') {
-    hideModals();
-    if (sidebar.classList.contains('open') && window.innerWidth < 1024) toggleSidebar();
+document.addEventListener('keydown',(e)=>{
+  if ((e.metaKey||e.ctrlKey) && e.key==='k') { e.preventDefault(); resetChat(); }
+  if (e.key==='Escape') {
+    hideModals(); hideProfileModal();
+    if (sidebar.classList.contains('open') && window.innerWidth<1024) toggleSidebar();
   }
 });
 
-// Initial focus
-setTimeout(() => mainInput.focus(), 600);
+// Handle window resize for sidebar behavior
+window.addEventListener('resize', ()=>{
+  if (window.innerWidth >= 1024) {
+    overlay.classList.add('hidden');
+  } else {
+    if (!sidebar.classList.contains('open')) {
+      overlay.classList.add('hidden');
+    }
+  }
+});
+
+setTimeout(()=>mainInput.focus(),600);
 </script>
 
 </body>
 </html>
+
+- fix, do totally hide sidebar it not working, make it can totally hide sidebar menu
+- for "ask me anything" after text make it stop.
