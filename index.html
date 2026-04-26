@@ -112,13 +112,27 @@
     }
     .sidebar.open { transform:translateX(0); }
 
+    /* Main content shift when sidebar is open */
+    .main-content {
+      margin-left: 0;
+      transition: margin-left 0.5s cubic-bezier(0.22,1,0.36,1);
+      width: 100%;
+    }
+    
+    .main-content.shifted {
+      margin-left: 300px;
+      width: calc(100% - 300px);
+    }
+
     @media(min-width:1024px) {
-      .sidebar { transform:translateX(0); }
-      .main-shift { margin-left:300px; }
-      .sidebar-close-desktop { display:none; }
+      /* Desktop: sidebar starts hidden, only shows when toggled */
+      .sidebar { transform:translateX(-100%); }
+      .sidebar.open { transform:translateX(0); }
+      .main-content.shifted { margin-left: 300px; width: calc(100% - 300px); }
     }
     @media(max-width:1023px) {
       .sidebar-close-desktop { display:flex; }
+      .main-content.shifted { margin-left: 0; width: 100%; }
     }
 
     .nav-item {
@@ -530,6 +544,9 @@
 <div class="bg-pattern"></div>
 <div class="grid-pattern-light"></div>
 
+<!-- Sidebar Overlay (Mobile) -->
+<div id="overlay" class="fixed inset-0 bg-black/25 backdrop-blur-sm z-[1000] hidden transition-opacity duration-300" onclick="toggleSidebar()"></div>
+
 <!-- Sidebar -->
 <aside id="sidebar" class="sidebar liquid-glass-strong" style="border-radius:0 28px 28px 0;">
   <button class="sidebar-close" onclick="toggleSidebar()" aria-label="Close sidebar">
@@ -605,11 +622,8 @@
   </div>
 </aside>
 
-<!-- Overlay for mobile sidebar -->
-<div id="overlay" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[1000] hidden transition-all duration-300" onclick="toggleSidebar()"></div>
-
 <!-- Main Content -->
-<main id="mainContent" class="relative z-10 min-h-screen flex flex-col main-shift transition-all duration-500">
+<main id="mainContent" class="main-content relative z-10 min-h-screen flex flex-col transition-all duration-500">
 
   <!-- Top Bar -->
   <header class="flex items-center justify-between px-5 md:px-8 py-4 sticky top-0 z-50" style="background:rgba(248,249,250,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.04);">
@@ -931,11 +945,11 @@ function renderSuggestions() {
   const chatContainer = document.getElementById('chatSuggestions');
   const suggestions = suggestionPools[currentSuggestionSet];
   container.innerHTML = suggestions.map(s =>
-    `<button class="suggest-chip" onclick="quickAsk('${s.replace(/'/g,"\\'")}')">${s}</button>`
+    `<button class="suggest-chip" onclick="quickAsk('${s.replace(/'/g,"\'")}')">${s}</button>`
   ).join('');
   if (!chatSection.classList.contains('hidden')) {
     chatContainer.innerHTML = suggestions.slice(0,4).map(s =>
-      `<button class="suggest-chip" onclick="quickAskInChat('${s.replace(/'/g,"\\'")}')">${s}</button>`
+      `<button class="suggest-chip" onclick="quickAskInChat('${s.replace(/'/g,"\'")}')">${s}</button>`
     ).join('');
     chatContainer.classList.remove('hidden');
   } else {
@@ -956,38 +970,20 @@ const MAX_MESSAGES_GUEST = 2;
 const MAX_MESSAGES_USER = 50;
 
 // ============================================
-// TYPING ANIMATION (Single Phrase: "Ask me anything.")
+// TYPING ANIMATION (Types once then stops)
 // ============================================
 const typingTargetText = "Ask me anything.";
 let currentCharIndex = 0;
-let isDeleting = false;
-let typingSpeed = 80;
 const typedTextEl = document.getElementById('typedText');
 
 function typeEffect() {
-  if (!isDeleting) {
-    // Typing forward
+  if (currentCharIndex <= typingTargetText.length) {
+    typedTextEl.textContent = typingTargetText.substring(0, currentCharIndex);
     currentCharIndex++;
-    typedTextEl.textContent = typingTargetText.substring(0, currentCharIndex);
-    typingSpeed = 70 + Math.random() * 50;
-
-    if (currentCharIndex === typingTargetText.length) {
-      // Pause at the end of the phrase
-      isDeleting = true;
-      typingSpeed = 3000; // Wait 3 seconds before deleting
-    }
-  } else {
-    // Deleting
-    currentCharIndex--;
-    typedTextEl.textContent = typingTargetText.substring(0, currentCharIndex);
-    typingSpeed = 35;
-
-    if (currentCharIndex === 0) {
-      isDeleting = false;
-      typingSpeed = 500; // Pause before typing again
-    }
+    const delay = currentCharIndex <= typingTargetText.length ? (60 + Math.random() * 40) : 0;
+    setTimeout(typeEffect, delay);
   }
-  setTimeout(typeEffect, typingSpeed);
+  // Once done, just keep the cursor blinking - no deletion or looping
 }
 typeEffect();
 renderSuggestions();
@@ -1164,23 +1160,88 @@ function hideProfileModal() {
 }
 
 // ============================================
-// SIDEBAR (Always Toggles)
+// SIDEBAR TOGGLE (Works on all screen sizes)
 // ============================================
 function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const mainContent = document.getElementById('mainContent');
+  
   const isOpen = sidebar.classList.toggle('open');
+  
+  // Handle overlay visibility
   if (window.innerWidth < 1024) {
     overlay.classList.toggle('hidden', !isOpen);
+    if (isOpen) {
+      overlay.style.opacity = '1';
+    } else {
+      overlay.style.opacity = '0';
+    }
+  } else {
+    // On desktop, no overlay needed, but shift main content
+    overlay.classList.add('hidden');
   }
-  mainContent.classList.toggle('main-shift', isOpen);
+  
+  // Shift main content when sidebar opens (desktop only)
+  if (window.innerWidth >= 1024) {
+    mainContent.classList.toggle('shifted', isOpen);
+  } else {
+    mainContent.classList.remove('shifted');
+  }
 }
 
-// Start with sidebar CLOSED on all screen sizes
-// (User can open it by clicking the hamburger menu)
-overlay.classList.add('hidden');
-
+// Close sidebar when clicking outside on mobile
 document.addEventListener('click', (e) => {
-  if (window.innerWidth < 1024 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !e.target.closest('[onclick*="toggleSidebar"]')) {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  
+  if (window.innerWidth < 1024 && sidebar.classList.contains('open') && 
+      !sidebar.contains(e.target) && 
+      !e.target.closest('[onclick*="toggleSidebar"]') &&
+      !e.target.closest('#overlay')) {
     toggleSidebar();
+  }
+});
+
+// Handle escape key to close sidebar
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar.classList.contains('open')) {
+      toggleSidebar();
+    }
+    hideModals(); 
+    hideProfileModal();
+  }
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { 
+    e.preventDefault(); 
+    resetChat(); 
+  }
+});
+
+// Handle window resize - close sidebar if going to mobile size while open
+window.addEventListener('resize', () => {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const mainContent = document.getElementById('mainContent');
+  
+  if (window.innerWidth >= 1024) {
+    overlay.classList.add('hidden');
+    // If sidebar is open on desktop, ensure main content shifts
+    if (sidebar.classList.contains('open')) {
+      mainContent.classList.add('shifted');
+    } else {
+      mainContent.classList.remove('shifted');
+    }
+  } else {
+    // Mobile: remove shift, handle overlay
+    mainContent.classList.remove('shifted');
+    if (sidebar.classList.contains('open')) {
+      overlay.classList.remove('hidden');
+      overlay.style.opacity = '1';
+    } else {
+      overlay.classList.add('hidden');
+    }
   }
 });
 
@@ -1268,7 +1329,9 @@ async function getAIResponse(userMsg) {
   } catch(err) {
     console.error(err);
     typingIndicator.classList.add('hidden');
-    addMessage(`I'm experiencing technical difficulties. Please try again.\n\n*Error: ${err.message}*`,'error');
+    addMessage(`I'm experiencing technical difficulties. Please try again.
+
+*Error: ${err.message}*`,'error');
   } finally {
     isBusy=false;
     updateLimitDisplay();
@@ -1396,31 +1459,8 @@ function copyCodeBlock(btn) {
   });
 }
 
-// Keyboard shortcuts
-document.addEventListener('keydown',(e)=>{
-  if ((e.metaKey||e.ctrlKey) && e.key==='k') { e.preventDefault(); resetChat(); }
-  if (e.key==='Escape') {
-    hideModals(); hideProfileModal();
-    if (sidebar.classList.contains('open') && window.innerWidth<1024) toggleSidebar();
-  }
-});
-
-// Handle window resize for sidebar behavior
-window.addEventListener('resize', ()=>{
-  if (window.innerWidth >= 1024) {
-    overlay.classList.add('hidden');
-  } else {
-    if (!sidebar.classList.contains('open')) {
-      overlay.classList.add('hidden');
-    }
-  }
-});
-
 setTimeout(()=>mainInput.focus(),600);
 </script>
 
 </body>
 </html>
-
-- fix, do totally hide sidebar it not working, make it can totally hide sidebar menu
-- for "ask me anything" after text make it stop.
