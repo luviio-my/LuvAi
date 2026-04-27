@@ -114,7 +114,7 @@
       display:flex;
       flex-direction:column;
       border-radius: 0 !important; 
-      overflow:hidden;
+      overflow:hidden; /* Keep outer container clipped */
     }
     
     .sidebar.open { transform:translateX(0); }
@@ -181,7 +181,7 @@
 
     @media(min-width: 1024px) {
   .sidebar-close { 
-    display: none !important; /* Force hide on desktop */
+    display: none !important; 
   }
 }
     
@@ -862,9 +862,9 @@
     .model-dropdown {
       position:absolute;
       top:calc(100% + 8px);
-      left:0; /* Changed from right:0 to left:0 for proper alignment */
-      min-width:280px; /* Increased slightly for better fit */
-      width:max-content; /* Auto width based on content */
+      left:0; 
+      min-width:280px;
+      width:max-content;
       background:rgba(255,255,255,0.98);
       backdrop-filter:blur(30px);
       -webkit-backdrop-filter:blur(30px);
@@ -875,7 +875,7 @@
       visibility:hidden;
       transform:translateY(-8px) scale(0.96);
       transition:all 0.25s cubic-bezier(0.16,1,0.3,1);
-      z-index:9999; /* High z-index to appear above everything */
+      z-index:9999;
       overflow:hidden;
     }
     
@@ -1095,6 +1095,21 @@
       padding:12px;
       justify-content:center;
     }
+
+    /* === MOBILE SIDEBAR SCROLL FIX === */
+    @media(max-width:1023px) {
+      .sidebar .sidebar-scroll-container {
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+      }
+      
+      /* Hide scrollbar on mobile but keep functionality */
+      .sidebar .sidebar-scroll-container::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1113,9 +1128,10 @@
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
 
-  <div class="p-5 flex-1 flex flex-col overflow-hidden h-full">
+  <!-- CHANGED: Added sidebar-scroll-container for proper mobile scrolling -->
+  <div class="sidebar-scroll-container p-5 flex-1 flex flex-col h-full" style="overflow-y: auto; overflow-x: hidden;">
     <!-- Header: Logo + Toggle -->
-    <div class="flex items-center justify-between mb-6 pr-8 lg:pr-5">
+    <div class="flex items-center justify-between mb-6 pr-8 lg:pr-5 flex-shrink-0">
       <div class="flex items-center gap-3 overflow-hidden">
         <img src="https://images.luviio.com/luviio-logo-circle-v1.png" alt="LuvAi" class="logo-img flex-shrink-0"/>
         <div class="nav-text whitespace-nowrap overflow-hidden transition-all duration-300">
@@ -1126,13 +1142,13 @@
     </div>
 
     <!-- New Chat -->
-    <button onclick="resetChat(); if(window.innerWidth<1024)toggleSidebar();" class="new-chat-btn mb-6">
+    <button onclick="resetChat(); if(window.innerWidth<1024)toggleSidebar();" class="new-chat-btn mb-6 flex-shrink-0">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       <span class="new-chat-btn-text">New Chat</span>
     </button>
 
     <!-- Nav -->
-    <nav class="space-y-1.5 flex-1 overflow-y-auto pr-2">
+    <nav class="space-y-1.5 flex-1 overflow-y-auto pr-2 min-h-0">
       <div class="nav-item active" onclick="resetChat(); if(window.innerWidth<1024)toggleSidebar();">
         <svg class="nav-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span class="nav-text">Home</span>
@@ -1144,7 +1160,7 @@
     </nav>
 
     <!-- Bottom Profile Section -->
-    <div class="mt-auto pt-4 border-t border-black/[0.06]">
+    <div class="mt-auto pt-4 border-t border-black/[0.06] flex-shrink-0">
       <!-- Logged In State -->
       <div id="userSection" class="hidden">
         <div class="profile-card" onclick="showProfileModal()" style="cursor:pointer;">
@@ -1192,8 +1208,8 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-gray-400"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
 
-      <!-- Model Selector (LEFT SIDE) -->
-      <div class="model-selector hidden sm:block" id="modelSelectorContainer">
+      <!-- CHANGED: Model Selector now visible on all screens including mobile -->
+      <div class="model-selector" id="modelSelectorContainer">
         <button class="model-selector-btn" onclick="toggleModelDropdown(event)" id="modelSelectorBtn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 22l-.75-12.07A4.001 4.001 0 0 1 12 2z"/><circle cx="12" cy="6" r="1"/></svg>
           <span id="selectedModelName">GLM 4.5 Air</span>
@@ -1208,10 +1224,7 @@
         </div>
       </div>
 
-<div class="flex items-center gap-2.5 cursor-pointer select-none lg:hidden" onclick="resetChat()">
-  <img src="https://images.luviio.com/luviio-logo-circle-v1.png" alt="LuvAi" class="w-8 h-8 rounded-lg object-cover"/>
-  <span class="text-xl font-bold tracking-tight text-gray-900">LuvAi</span>
-</div>
+      <!-- REMOVED: Mobile LuvAi logo (replaced by model selector above) -->
     </div>
 
     <div class="flex items-center gap-3">
@@ -1241,7 +1254,7 @@
       </div>
       <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-5 leading-[1.1] tracking-tight text-gray-900 flex items-center justify-center">
         <span class="typing-wrapper">
-          <span id="typedText" class="text-gray-900"></span><span class="typing-cursor"></span>
+          <span id="typedText" class="text-gray-900"></span><span class="typing-cursor" id="typingCursorElement"></span>
         </span>
       </h1>
       <p class="text-base text-gray-400 mt-5 font-normal max-w-lg mx-auto leading-relaxed">Your intelligent companion for research, coding, writing, and creative exploration.</p>
@@ -1609,21 +1622,59 @@ const MAX_MESSAGES_GUEST = 2;
 const MAX_MESSAGES_USER = 50;
 
 // ============================================
-// TYPING ANIMATION
+// TYPING ANIMATION & GREETING LOGIC
 // ============================================
 const typingTargetText = "Ask me anything.";
 let currentCharIndex = 0;
 const typedTextEl = document.getElementById('typedText');
+const typingCursorEl = document.getElementById('typingCursorElement');
+let typingTimeoutId = null;
 
 function typeEffect() {
+  // Stop if user is logged in (greeting mode)
+  if (user) return;
+  
   if (currentCharIndex <= typingTargetText.length) {
     typedTextEl.textContent = typingTargetText.substring(0, currentCharIndex);
     currentCharIndex++;
     const delay = currentCharIndex <= typingTargetText.length ? (60 + Math.random() * 40) : 0;
-    setTimeout(typeEffect, delay);
+    typingTimeoutId = setTimeout(typeEffect, delay);
   }
 }
-typeEffect();
+
+// NEW: Function to set personalized greeting
+function setUserGreeting() {
+  if (typingTimeoutId) {
+    clearTimeout(typingTimeoutId);
+    typingTimeoutId = null;
+  }
+  
+  if (user) {
+    const displayName = user.displayName;
+    const emailPart = user.email ? user.email.split('@')[0] : 'there';
+    const name = displayName || emailPart || 'there';
+    
+    // Set static greeting text
+    typedTextEl.textContent = `Hi, ${name}`;
+    
+    // Hide cursor for static text (optional - remove next line if you want cursor)
+    typingCursorEl.style.display = 'none';
+  } else {
+    // Restore animation state
+    typingCursorEl.style.display = 'inline-block';
+    currentCharIndex = 0;
+    typedTextEl.textContent = '';
+    typeEffect();
+  }
+}
+
+// Initialize animation (will be overridden by auth state if user exists)
+setTimeout(() => {
+  if (!user) {
+    typeEffect();
+  }
+}, 100);
+
 renderSuggestions();
 
 // ============================================
@@ -1662,7 +1713,6 @@ function renderModelOptions() {
 }
 
 function toggleModelDropdown(e) {
-  // Prevent event propagation to avoid immediate closing
   if (e) e.stopPropagation();
   
   const dropdown = document.getElementById('modelDropdown');
@@ -1672,7 +1722,6 @@ function toggleModelDropdown(e) {
   
   if (isOpen) {
     renderModelOptions();
-    // Close on outside click after a small delay to prevent immediate trigger
     setTimeout(() => {
       document.addEventListener('click', handleOutsideClick);
     }, 10);
@@ -1685,7 +1734,6 @@ function handleOutsideClick(e) {
   const container = document.getElementById('modelSelectorContainer');
   const dropdown = document.getElementById('modelDropdown');
   
-  // Check if click is outside the dropdown and button
   if (!container.contains(e.target)) {
     toggleModelDropdown();
   }
@@ -1696,7 +1744,6 @@ async function selectModel(modelId) {
   renderModelOptions();
   toggleModelDropdown();
   
-  // Save to Firestore if we have an active conversation
   if (currentConversationId && user) {
     try {
       await db.collection('luvai_chathistory').doc(currentConversationId).update({
@@ -1715,24 +1762,25 @@ auth.onAuthStateChanged(async(u) => {
   if (user) {
     showLoggedInState();
     await loadChatHistory();
-    // Re-render model options to potentially unlock pro models
     renderModelOptions();
+    // CHANGED: Set personalized greeting instead of animation
+    setUserGreeting();
   } else {
     showLoggedOutState();
     renderModelOptions();
+    // CHANGED: Restore default animation
+    setUserGreeting();
   }
   updateLimitDisplay();
 });
 
 function showLoggedInState() {
-  // Hide auth buttons
   authButtons.classList.add('hidden');
   newChatBtn.classList.remove('hidden');
   userSection.classList.remove('hidden');
   guestSection.classList.add('hidden');
   headerProfileBtn.classList.remove('hidden');
   
-  // Set user info
   const email = user.email || 'User';
   const name = user.displayName || email.split('@')[0];
   const photoURL = user.photoURL || 'https://images.luviio.com/luviio-logo-circle-v1.png';
@@ -1777,7 +1825,6 @@ function updateLimitDisplay() {
 async function loadChatHistory() {
   if (!user) return;
   
-  // Unsubscribe from previous listener
   if (unsubscribeHistory) {
     unsubscribeHistory();
   }
@@ -1839,7 +1886,6 @@ async function loadConversation(convId,msgs,model) {
   currentConversationId = convId;
   messages = msgs || [];
   
-  // Restore model selection
   if (model && MODELS_CONFIG.find(m => m.id === model)) {
     selectedModelId = model;
     renderModelOptions();
@@ -1904,7 +1950,6 @@ function signOut() {
 function showModal(id) { document.getElementById(id).classList.add('show'); }
 function hideModals() { 
   document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('show')); 
-  // Also close model dropdown if open
   const dropdown = document.getElementById('modelDropdown');
   if (dropdown && dropdown.classList.contains('show')) {
     toggleModelDropdown();
@@ -1941,7 +1986,6 @@ function toggleSidebar() {
   const overlay = document.getElementById('overlay');
   const mainContent = document.getElementById('mainContent');
   
-  // If collapsed on desktop, uncollapse first
   if (isSidebarCollapsed && window.innerWidth >= 1024) {
     toggleSidebarCollapse();
   }
@@ -1952,8 +1996,11 @@ function toggleSidebar() {
     overlay.classList.toggle('hidden', !isOpen);
     if (isOpen) {
       overlay.style.opacity = '1';
+      // Prevent body scroll when sidebar open on mobile
+      document.body.style.overflow = 'hidden';
     } else {
       overlay.style.opacity = '0';
+      document.body.style.overflow = '';
     }
   } else {
     overlay.classList.add('hidden');
@@ -1976,14 +2023,12 @@ function toggleSidebarCollapse() {
     sidebar.classList.remove('collapsed');
   }
   
-  // Ensure sidebar is open on desktop when toggling collapse
   if (window.innerWidth >= 1024 && !sidebar.classList.contains('open')) {
     sidebar.classList.add('open');
   }
   
   updateMainContentMargin();
   
-  // Rotate toggle icon
   const toggleBtn = document.getElementById('sidebarToggleBtn');
   if (isSidebarCollapsed) {
     toggleBtn.style.transform = 'rotate(180deg)';
@@ -2007,7 +2052,6 @@ function updateMainContentMargin() {
   }
 }
 
-// Close sidebar when clicking outside on mobile
 document.addEventListener('click', (e) => {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('overlay');
@@ -2020,7 +2064,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Handle escape key
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     const sidebar = document.getElementById('sidebar');
@@ -2030,7 +2073,6 @@ document.addEventListener('keydown', (e) => {
     hideModals(); 
     hideProfileModal();
     
-    // Close model dropdown if open
     const dropdown = document.getElementById('modelDropdown');
     if (dropdown && dropdown.classList.contains('show')) {
       toggleModelDropdown();
@@ -2042,7 +2084,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Handle window resize
 window.addEventListener('resize', () => {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('overlay');
@@ -2050,16 +2091,18 @@ window.addEventListener('resize', () => {
   
   if (window.innerWidth >= 1024) {
     overlay.classList.add('hidden');
+    document.body.style.overflow = '';
     updateMainContentMargin();
   } else {
     mainContent.classList.remove('shifted', 'shifted-collapsed');
     if (sidebar.classList.contains('open')) {
       overlay.classList.remove('hidden');
       overlay.style.opacity = '1';
+      document.body.style.overflow = 'hidden';
     } else {
       overlay.classList.add('hidden');
+      document.body.style.overflow = '';
     }
-    // Reset collapse state on mobile
     if (isSidebarCollapsed) {
       isSidebarCollapsed = false;
       sidebar.classList.remove('collapsed');
@@ -2118,7 +2161,6 @@ async function sendChatMessage() {
 }
 
 async function getAIResponse(userMsg) {
-  // Show thinking indicator instead of typing dots
   thinkingIndicator.classList.remove('hidden');
   typingIndicator.classList.add('hidden');
   scrollToBottom();
@@ -2146,7 +2188,6 @@ async function getAIResponse(userMsg) {
     const data = await res.json();
     const reply = data.choices?.[0]?.message?.content || "I apologize, but I couldn't generate a response at this moment.";
     
-    // Hide thinking indicator
     thinkingIndicator.classList.add('hidden');
     
     addMessage(reply,'assistant');
@@ -2189,7 +2230,6 @@ function addMessage(content, role, animate=true) {
         </div>
       </div>`;
   } else {
-    // Check if content is long enough for expand/collapse (more than ~500 chars)
     const isLongContent = content.length > 500;
     const contentId = 'content-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     
@@ -2222,7 +2262,6 @@ function addMessage(content, role, animate=true) {
   scrollToBottom();
 }
 
-// NEW: Toggle expand/collapse for long responses
 function toggleExpand(contentId, btn) {
   const contentEl = document.getElementById(contentId);
   const isExpanded = contentEl.classList.contains('expanded');
@@ -2242,7 +2281,6 @@ function resetChat() {
   messages=[]; 
   messageCount=0; 
   currentConversationId=null;
-  // Reset to default model
   selectedModelId = MODELS_CONFIG[0].id;
   renderModelOptions();
   
@@ -2260,6 +2298,9 @@ function resetChat() {
   upgradeBtn.style.display='none';
   renderSuggestions();
   if (user) loadChatHistory();
+  
+  // Re-set greeting based on auth state
+  setUserGreeting();
 }
 
 function scrollToBottom() {
@@ -2297,7 +2338,6 @@ function regenerateResponse(btn) {
 
 function renderMd(text) {
   let h = escHtml(text);
-  // Code blocks
   h = h.replace(/```(\w*)([\s\S]*?)```/g, (_,lang,code)=>
     `<div class="code-block my-4 overflow-hidden"><div class="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]" style="background:rgba(255,255,255,0.03);"><span class="text-white/40 text-[11px] font-mono font-semibold uppercase tracking-wide">${lang||'code'}</span><button onclick="copyCodeBlock(this)" class="text-[11px] text-white/30 hover:text-emerald-400 transition-colors font-medium flex items-center gap-1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre class="p-5 overflow-x-auto text-white/70 leading-relaxed font-mono text-[12px]">${code.trim()}</pre></div>`
   );
@@ -2324,9 +2364,8 @@ function copyCodeBlock(btn) {
   });
 }
 
-// Initialize model selector
+// Initialize
 renderModelOptions();
-
 setTimeout(()=>mainInput.focus(),600);
 </script>
 
