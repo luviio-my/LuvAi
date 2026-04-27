@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>LuvAi — Intelligent Assistant</title>
+  <title>LuvAi by luviio.</title>
 
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -383,6 +383,8 @@
       box-shadow:0 4px 20px rgba(15,23,42,0.15),inset 0 1px 0 rgba(255,255,255,0.1);
       position:relative;
       overflow:hidden;
+      word-wrap:break-word;
+      overflow-wrap:break-word;
     }
     .bubble-user::before {
       content:'';
@@ -403,6 +405,8 @@
       border-radius:22px 22px 22px 6px;
       border:1px solid rgba(0,0,0,0.06);
       box-shadow:0 4px 20px rgba(0,0,0,0.04),inset 0 1px 0 rgba(255,255,255,0.9);
+      word-wrap:break-word;
+      overflow-wrap:break-word;
     }
 
     /* === TYPING DOTS === */
@@ -418,6 +422,137 @@
     @keyframes bounceDot {
       0%,80%,100% { transform:scale(0.6); opacity:0.3; }
       40% { transform:scale(1.1) translateY(-4px); opacity:1; }
+    }
+
+    /* === THINKING ANIMATION (NEW) === */
+    .thinking-indicator {
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding:16px 20px;
+      animation:thinkingPulse 2s ease-in-out infinite;
+    }
+    
+    .thinking-brain {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:rgba(0,0,0,0.5);
+      font-size:12.5px;
+      font-weight:600;
+      letter-spacing:0.02em;
+    }
+    
+    .thinking-spinner {
+      width:18px;
+      height:18px;
+      border:2px solid rgba(99,102,241,0.2);
+      border-top-color:rgb(99,102,241);
+      border-radius:50%;
+      animation:spin 0.8s linear infinite;
+    }
+    
+    .thinking-steps {
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      font-size:11.5px;
+      color:rgba(0,0,0,0.35);
+      font-weight:500;
+    }
+    
+    .thinking-step {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      opacity:0;
+      animation:stepAppear 0.4s ease forwards;
+    }
+    
+    .thinking-step:nth-child(1) { animation-delay:0.2s; }
+    .thinking-step:nth-child(2) { animation-delay:0.8s; }
+    .thinking-step:nth-child(3) { animation-delay:1.4s; }
+    
+    .step-dot {
+      width:5px;
+      height:5px;
+      border-radius:50%;
+      background:rgba(99,102,241,0.4);
+      flex-shrink:0;
+    }
+    
+    @keyframes spin {
+      to { transform:rotate(360deg); }
+    }
+    
+    @keyframes thinkingPulse {
+      0%, 100% { opacity:1; }
+      50% { opacity:0.7; }
+    }
+    
+    @keyframes stepAppear {
+      from { opacity:0; transform:translateX(-8px); }
+      to { opacity:1; transform:translateX(0); }
+    }
+
+    /* === SHOW MORE / SHOW LESS TOGGLE (NEW) === */
+    .expandable-content {
+      max-height:200px;
+      overflow:hidden;
+      position:relative;
+      transition:max-height 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    
+    .expandable-content.expanded {
+      max-height:2000px;
+    }
+    
+    .expandable-content::after {
+      content:'';
+      position:absolute;
+      bottom:0;
+      left:0;
+      right:0;
+      height:60px;
+      background:linear-gradient(to top, rgba(255,255,255,0.9) 0%, transparent 100%);
+      pointer-events:none;
+      transition:opacity 0.3s ease;
+    }
+    
+    .expandable-content.expanded::after {
+      opacity:0;
+    }
+    
+    .show-more-toggle {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-top:12px;
+      padding:6px 14px;
+      border-radius:9999px;
+      background:rgba(0,0,0,0.04);
+      border:1px solid rgba(0,0,0,0.06);
+      color:rgba(0,0,0,0.5);
+      font-size:11.5px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.25s ease;
+      user-select:none;
+    }
+    
+    .show-more-toggle:hover {
+      background:rgba(0,0,0,0.07);
+      color:rgba(0,0,0,0.8);
+      transform:translateY(-1px);
+    }
+    
+    .toggle-arrow {
+      transition:transform 0.3s ease;
+      font-size:10px;
+    }
+    
+    .show-more-toggle.active .toggle-arrow {
+      transform:rotate(180deg);
     }
 
     /* === MODAL === */
@@ -455,26 +590,59 @@
       line-height:1.7;
       border:1px solid rgba(255,255,255,0.05);
       box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
-      overflow:hidden;
+      overflow-x:auto;
+      max-width:100%;
     }
 
-    /* === MARKDOWN === */
-    .md p { margin-bottom:0.85rem; line-height:1.75; font-size:14px; color:rgba(0,0,0,0.75); }
+    /* === MARKDOWN (IMPROVED RESPONSIVE) === */
+    .md { 
+      overflow-wrap: break-word; 
+      word-wrap: break-word;
+      hyphens: auto;
+    }
+    .md p { 
+      margin-bottom:0.85rem; 
+      line-height:1.75; 
+      font-size:14px; 
+      color:rgba(0,0,0,0.75); 
+    }
     .md p:last-child { margin-bottom:0; }
     .md code:not(pre code) {
       background:rgba(15,23,42,0.06);
-      padding:3px 8px;
-      border-radius:7px;
+      padding:2px 6px;
+      border-radius:6px;
       font-family:'JetBrains Mono',monospace;
       font-size:12px;
       color:#4338ca;
       border:1px solid rgba(0,0,0,0.04);
+      word-break: break-all;
     }
-    .md pre code { background:none; color:rgba(255,255,255,0.8); }
-    .md ul,.md ol { margin:0.85rem 0 0.85rem 1.5rem; }
-    .md li { margin-bottom:0.35rem; line-height:1.7; font-size:14px; color:rgba(0,0,0,0.65); }
+    .md pre code { 
+      background:none; 
+      color:rgba(255,255,255,0.8);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .md ul,.md ol { 
+      margin:0.85rem 0 0.85rem 1.25rem; 
+      padding-inline-start: 1rem;
+    }
+    .md li { 
+      margin-bottom:0.35rem; 
+      line-height:1.65; 
+      font-size:14px; 
+      color:rgba(0,0,0,0.65);
+      word-break: break-word;
+    }
     .md strong { font-weight:700; color:#0f172a; }
-    .md h1,.md h2,.md h3 { font-weight:700; margin-top:1.2rem; margin-bottom:0.6rem; letter-spacing:-0.02em; color:#0f172a; }
+    .md h1,.md h2,.md h3 { 
+      font-weight:700; 
+      margin-top:1.2rem; 
+      margin-bottom:0.6rem; 
+      letter-spacing:-0.02em; 
+      color:#0f172a;
+      word-break: break-word;
+    }
     .md blockquote {
       border-left:4px solid rgba(15,23,42,0.2);
       padding:12px 16px;
@@ -484,6 +652,37 @@
       background:rgba(15,23,42,0.03);
       border-radius:0 12px 12px 0;
       font-size:13.5px;
+      word-break: break-word;
+    }
+    .md table {
+      width:100%;
+      border-collapse: collapse;
+      margin:1rem 0;
+      font-size:13px;
+      display: block;
+      overflow-x: auto;
+    }
+    .md th, .md td {
+      border:1px solid rgba(0,0,0,0.08);
+      padding:8px 12px;
+      text-align:left;
+    }
+    .md th {
+      background:rgba(0,0,0,0.04);
+      font-weight:600;
+    }
+
+    /* Mobile responsive text sizes */
+    @media(max-width:640px) {
+      .md p { font-size:13px; line-height:1.7; }
+      .md li { font-size:13px; }
+      .md h1 { font-size:1.25rem; }
+      .md h2 { font-size:1.125rem; }
+      .md h3 { font-size:1rem; }
+      .md blockquote { font-size:12.5px; padding:10px 14px; }
+      .md code:not(pre code) { font-size:11px; padding:2px 5px; }
+      .code-block { font-size:11px; line-height:1.6; }
+      .bubble-user p, .bubble-ai .md { font-size:13px !important; }
     }
 
     /* === LIMIT BADGE === */
@@ -632,7 +831,7 @@
       box-shadow:0 0 0 4px rgba(15,23,42,0.05);
     }
 
-    /* === MODEL SELECTOR === */
+    /* === MODEL SELECTOR (FIXED POSITIONING) === */
     .model-selector {
       position:relative;
       display:inline-block;
@@ -663,18 +862,20 @@
     .model-dropdown {
       position:absolute;
       top:calc(100% + 8px);
-      right:0;
-      min-width:260px;
-      background:rgba(255,255,255,0.95);
+      left:0; /* Changed from right:0 to left:0 for proper alignment */
+      min-width:280px; /* Increased slightly for better fit */
+      width:max-content; /* Auto width based on content */
+      background:rgba(255,255,255,0.98);
       backdrop-filter:blur(30px);
+      -webkit-backdrop-filter:blur(30px);
       border:1px solid rgba(0,0,0,0.08);
       border-radius:16px;
-      box-shadow:0 12px 40px rgba(0,0,0,0.12);
+      box-shadow:0 12px 48px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.05);
       opacity:0;
       visibility:hidden;
       transform:translateY(-8px) scale(0.96);
       transition:all 0.25s cubic-bezier(0.16,1,0.3,1);
-      z-index:100;
+      z-index:9999; /* High z-index to appear above everything */
       overflow:hidden;
     }
     
@@ -711,6 +912,7 @@
       display:flex;
       flex-direction:column;
       gap:2px;
+      text-align:left;
     }
     
     .model-option-name {
@@ -731,6 +933,7 @@
       font-weight:700;
       text-transform:uppercase;
       letter-spacing:0.02em;
+      flex-shrink:0;
     }
     
     .badge-free {
@@ -747,6 +950,7 @@
       color:#10b981;
       opacity:0;
       transition:opacity 0.15s ease;
+      flex-shrink:0;
     }
     
     .model-option.selected .model-check {
@@ -765,8 +969,28 @@
       .bubble-user,.bubble-ai { border-radius:18px 18px 4px 18px; }
       .send-btn { width:38px; height:38px; border-radius:12px; }
       .suggest-chip { padding:8px 14px; font-size:11.5px; }
+      
+      /* Mobile model selector adjustments */
       .model-selector-btn span { display:none; }
-      .model-dropdown { right:-10px; min-width:240px; }
+      .model-dropdown { 
+        left:50%; 
+        transform:translateX(-50%) translateY(-8px) scale(0.96);
+        min-width:260px;
+        width:calc(100vw - 32px);
+        max-width:300px;
+      }
+      .model-dropdown.show {
+        transform:translateX(-50%) translateY(0) scale(1);
+      }
+      
+      /* Improved mobile chat layout */
+      .msg-wrap { padding:0 4px; }
+      .bubble-user, .bubble-ai { max-width:92% !important; }
+      .bubble-user { border-radius:18px 18px 4px 18px !important; }
+      .bubble-ai { border-radius:18px 18px 18px 4px !important; }
+      
+      /* Smaller avatar on mobile */
+      #chatMessages img.w-9 { width:32px !important; height:32px !important; border-radius:14px !important; }
     }
 
     /* Profile modal */
@@ -968,21 +1192,15 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-gray-400"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
 
-<div class="flex items-center gap-2.5 cursor-pointer select-none lg:hidden" onclick="resetChat()">
-  <img src="https://images.luviio.com/luviio-logo-circle-v1.png" alt="LuvAi" class="w-8 h-8 rounded-lg object-cover"/>
-  <span class="text-xl font-bold tracking-tight text-gray-900">LuvAi</span>
-</div>
-
-    <div class="flex items-center gap-3">
-      <!-- Model Selector -->
-      <div class="model-selector" id="modelSelectorContainer">
-        <button class="model-selector-btn" onclick="toggleModelDropdown()" id="modelSelectorBtn">
+      <!-- Model Selector (LEFT SIDE) -->
+      <div class="model-selector hidden sm:block" id="modelSelectorContainer">
+        <button class="model-selector-btn" onclick="toggleModelDropdown(event)" id="modelSelectorBtn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 22l-.75-12.07A4.001 4.001 0 0 1 12 2z"/><circle cx="12" cy="6" r="1"/></svg>
           <span id="selectedModelName">GLM 4.5 Air</span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="transition-transform duration-200" id="modelDropdownArrow"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         
-        <div class="model-dropdown" id="modelDropdown">
+        <div class="model-dropdown" id="modelDropdown" onclick="event.stopPropagation()">
           <div class="p-3 border-b border-black/[0.04]" style="background:rgba(0,0,0,0.02);">
             <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-1">Select Model</p>
           </div>
@@ -990,6 +1208,14 @@
         </div>
       </div>
 
+<div class="flex items-center gap-2.5 cursor-pointer select-none lg:hidden" onclick="resetChat()">
+  <img src="https://images.luviio.com/luviio-logo-circle-v1.png" alt="LuvAi" class="w-8 h-8 rounded-lg object-cover"/>
+  <span class="text-xl font-bold tracking-tight text-gray-900">LuvAi</span>
+</div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <!-- Auth Buttons & Actions (RIGHT SIDE) -->
       <div id="authButtons" class="flex items-center gap-3">
         <button onclick="showModal('loginModal')" class="btn-primary text-xs hidden sm:block">Log in</button>
         <button onclick="showModal('signupModal')" class="btn-solid text-xs">Get Started</button>
@@ -1053,7 +1279,36 @@
   <section id="chatSection" class="hidden flex-1 flex flex-col px-4 md:px-8 pb-4 max-w-4xl mx-auto w-full relative">
     <div id="chatMessages" class="flex-1 overflow-y-auto space-y-6 py-6 scroll-smooth px-2"></div>
 
-    <!-- Typing Indicator -->
+    <!-- Thinking Indicator (NEW) -->
+    <div id="thinkingIndicator" class="hidden py-4">
+      <div class="flex items-start gap-3">
+        <img src="https://images.luviio.com/luviio-logo-circle-v1.png" class="w-9 h-9 rounded-2xl object-cover flex-shrink-0" style="box-shadow:0 4px 16px rgba(15,23,42,0.1);" alt="LuvAi"/>
+        <div class="liquid-glass px-5 py-4 rounded-[22px] rounded-tl-sm max-w-[85%] md:max-w-[75%]">
+          <div class="thinking-indicator">
+            <div class="thinking-brain">
+              <div class="thinking-spinner"></div>
+              <span>Thinking...</span>
+            </div>
+            <div class="thinking-steps">
+              <div class="thinking-step">
+                <span class="step-dot"></span>
+                <span>Analyzing your request</span>
+              </div>
+              <div class="thinking-step">
+                <span class="step-dot"></span>
+                <span>Processing information</span>
+              </div>
+              <div class="thinking-step">
+                <span class="step-dot"></span>
+                <span>Generating response</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typing Indicator (Legacy) -->
     <div id="typingIndicator" class="hidden py-4">
       <div class="flex items-start gap-3">
         <img src="https://images.luviio.com/luviio-logo-circle-v1.png" class="w-9 h-9 rounded-2xl object-cover flex-shrink-0" style="box-shadow:0 4px 16px rgba(15,23,42,0.1);" alt="LuvAi"/>
@@ -1372,7 +1627,7 @@ typeEffect();
 renderSuggestions();
 
 // ============================================
-// MODEL SELECTOR LOGIC
+// MODEL SELECTOR LOGIC (FIXED)
 // ============================================
 function getAvailableModels() {
   return MODELS_CONFIG.filter(model => {
@@ -1406,7 +1661,10 @@ function renderModelOptions() {
   }
 }
 
-function toggleModelDropdown() {
+function toggleModelDropdown(e) {
+  // Prevent event propagation to avoid immediate closing
+  if (e) e.stopPropagation();
+  
   const dropdown = document.getElementById('modelDropdown');
   const arrow = document.getElementById('modelDropdownArrow');
   const isOpen = dropdown.classList.toggle('show');
@@ -1414,10 +1672,10 @@ function toggleModelDropdown() {
   
   if (isOpen) {
     renderModelOptions();
-    // Close on outside click
+    // Close on outside click after a small delay to prevent immediate trigger
     setTimeout(() => {
       document.addEventListener('click', handleOutsideClick);
-    }, 0);
+    }, 10);
   } else {
     document.removeEventListener('click', handleOutsideClick);
   }
@@ -1425,6 +1683,9 @@ function toggleModelDropdown() {
 
 function handleOutsideClick(e) {
   const container = document.getElementById('modelSelectorContainer');
+  const dropdown = document.getElementById('modelDropdown');
+  
+  // Check if click is outside the dropdown and button
   if (!container.contains(e.target)) {
     toggleModelDropdown();
   }
@@ -1442,7 +1703,7 @@ async function selectModel(modelId) {
         model: modelId,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-    } catch(e) { console.error(e); }
+    } catch(err) { console.error(err); }
   }
 }
 
@@ -1645,7 +1906,7 @@ function hideModals() {
   document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('show')); 
   // Also close model dropdown if open
   const dropdown = document.getElementById('modelDropdown');
-  if (dropdown.classList.contains('show')) {
+  if (dropdown && dropdown.classList.contains('show')) {
     toggleModelDropdown();
   }
 }
@@ -1768,6 +2029,12 @@ document.addEventListener('keydown', (e) => {
     }
     hideModals(); 
     hideProfileModal();
+    
+    // Close model dropdown if open
+    const dropdown = document.getElementById('modelDropdown');
+    if (dropdown && dropdown.classList.contains('show')) {
+      toggleModelDropdown();
+    }
   }
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') { 
     e.preventDefault(); 
@@ -1851,8 +2118,11 @@ async function sendChatMessage() {
 }
 
 async function getAIResponse(userMsg) {
-  typingIndicator.classList.remove('hidden');
+  // Show thinking indicator instead of typing dots
+  thinkingIndicator.classList.remove('hidden');
+  typingIndicator.classList.add('hidden');
   scrollToBottom();
+  
   try {
     const res = await fetch('https://openrouter.ai/api/v1/chat/completions',{
       method:'POST',
@@ -1875,12 +2145,16 @@ async function getAIResponse(userMsg) {
     if (!res.ok) throw new Error(`API Error: ${res.status}`);
     const data = await res.json();
     const reply = data.choices?.[0]?.message?.content || "I apologize, but I couldn't generate a response at this moment.";
-    typingIndicator.classList.add('hidden');
+    
+    // Hide thinking indicator
+    thinkingIndicator.classList.add('hidden');
+    
     addMessage(reply,'assistant');
     messages.push({role:'assistant',content:reply});
     await saveToFirestore(messages);
   } catch(err) {
     console.error(err);
+    thinkingIndicator.classList.add('hidden');
     typingIndicator.classList.add('hidden');
     addMessage(`I'm experiencing technical difficulties. Please try again.
 
@@ -1915,11 +2189,23 @@ function addMessage(content, role, animate=true) {
         </div>
       </div>`;
   } else {
+    // Check if content is long enough for expand/collapse (more than ~500 chars)
+    const isLongContent = content.length > 500;
+    const contentId = 'content-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    
     div.innerHTML = `
       <div class="flex items-start gap-3">
         ${aiAvatar}
         <div class="flex-1 bubble-ai px-5 py-4 max-w-[85%] md:max-w-[75%]">
-          <div class="md text-[14px] leading-relaxed text-gray-800">${renderMd(content)}</div>
+          <div class="${isLongContent ? 'expandable-content' : ''}" id="${contentId}">
+            <div class="md text-[14px] leading-relaxed text-gray-800">${renderMd(content)}</div>
+          </div>
+          ${isLongContent ? `
+          <button class="show-more-toggle" onclick="toggleExpand('${contentId}', this)">
+            <span>Show more</span>
+            <span class="toggle-arrow">▼</span>
+          </button>
+          ` : ''}
           <div class="flex items-center gap-1 mt-4 pt-3 border-t border-black/[0.04]">
             <button onclick="copyText(this)" class="p-2 rounded-xl hover:bg-black/[0.04] text-gray-300 hover:text-gray-600 transition-all" title="Copy" aria-label="Copy">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -1934,6 +2220,22 @@ function addMessage(content, role, animate=true) {
   }
   chatMessages.appendChild(div);
   scrollToBottom();
+}
+
+// NEW: Toggle expand/collapse for long responses
+function toggleExpand(contentId, btn) {
+  const contentEl = document.getElementById(contentId);
+  const isExpanded = contentEl.classList.contains('expanded');
+  
+  if (isExpanded) {
+    contentEl.classList.remove('expanded');
+    btn.classList.remove('active');
+    btn.querySelector('span:first-child').textContent = 'Show more';
+  } else {
+    contentEl.classList.add('expanded');
+    btn.classList.add('active');
+    btn.querySelector('span:first-child').textContent = 'Show less';
+  }
 }
 
 function resetChat() {
@@ -1997,7 +2299,7 @@ function renderMd(text) {
   let h = escHtml(text);
   // Code blocks
   h = h.replace(/```(\w*)([\s\S]*?)```/g, (_,lang,code)=>
-    `<div class="code-block my-4 overflow-hidden"><div class="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]" style="background:rgba(255,255,255,0.03);"><span class="text-white/40 text-[11px] font-mono font-semibold uppercase tracking-wide">${lang||'code'}</span><button onclick="copyCodeBlock(this)" class="text-[11px] text-white/30 hover:text-emerald-400 transition-colors font-medium flex items-center gap-1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 0 0 1 2 2v1"/></svg> Copy</button></div><pre class="p-5 overflow-x-auto text-white/70 leading-relaxed font-mono text-[12px]">${code.trim()}</pre></div>`
+    `<div class="code-block my-4 overflow-hidden"><div class="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]" style="background:rgba(255,255,255,0.03);"><span class="text-white/40 text-[11px] font-mono font-semibold uppercase tracking-wide">${lang||'code'}</span><button onclick="copyCodeBlock(this)" class="text-[11px] text-white/30 hover:text-emerald-400 transition-colors font-medium flex items-center gap-1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre class="p-5 overflow-x-auto text-white/70 leading-relaxed font-mono text-[12px]">${code.trim()}</pre></div>`
   );
   h = h.replace(/`([^`]+)`/g,'<code>$1</code>');
   h = h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
@@ -2008,7 +2310,7 @@ function renderMd(text) {
   h = h.replace(/^\- (.+)$/gm,'<li class="ml-5 list-disc marker:text-gray-300 my-1">$1</li>');
   h = h.replace(/^\d+\. (.+)$/gm,'<li class="ml-5 list-decimal marker:text-gray-300 my-1">$1</li>');
   h = h.replace(/^&gt; (.+)$/gm,'<blockquote class="border-l-4 border-gray-900/10 pl-4 italic text-gray-500 my-3 py-2.5 pr-3 rounded-r-xl text-[13.5px]" style="background:rgba(15,23,42,0.02);">$1</blockquote>');
-  h = h.replace(/(?:)/g,'</p><p class="mb-3">');
+  h = h.replace(/\n\n/g,'</p><p class="mb-3">');
   h = `<p>${h}</p>`;
   return h;
 }
